@@ -19,41 +19,58 @@ import {
 
 import { useTranslation } from "react-i18next";
 
-/* ---------------------- TRADINGVIEW GENERIC EMBED ---------------------- */
-/** Generic TradingView widget embedder (script-based widgets).
- *  Usage:
- *   <TVWidget src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" options={{ ... }} />
+/* ---------------------- TRADINGVIEW GENERIC EMBED (stable) ---------------------- */
+/**
+ * TVWidget loads TradingView embeds stably:
+ * - Injects the script only once per container (uses data-loaded flag)
+ * - Uses JSON.stringify(options) in deps so identical option objects don't re-trigger
  */
 function TVWidget({
+  id,
   src,
   options,
   height = 420,
   className = "",
 }: {
+  id?: string;
   src: string;
   options: Record<string, any>;
   height?: number | string;
   className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const optionsKey = JSON.stringify(options);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Clear previous script if any rerender happens
-    containerRef.current.innerHTML = `<div class="tradingview-widget-container__widget" style="height:${typeof height === "number" ? `${height}px` : height};"></div>`;
+    // If it's already loaded, stop (prevents blinking/re-injection)
+    if (containerRef.current.dataset.loaded === "true") return;
 
+    // Create widget container
+    const widgetDiv = document.createElement("div");
+    widgetDiv.className = "tradingview-widget-container__widget";
+    widgetDiv.style.height = typeof height === "number" ? `${height}px` : String(height);
+    containerRef.current.appendChild(widgetDiv);
+
+    // Create script tag
     const script = document.createElement("script");
     script.src = src;
     script.type = "text/javascript";
     script.async = true;
-    script.innerHTML = JSON.stringify(options);
-
+    script.innerHTML = optionsKey;
     containerRef.current.appendChild(script);
-  }, [src, options, height]);
+
+    // Mark loaded so we don't re-initialize
+    containerRef.current.dataset.loaded = "true";
+
+    // IMPORTANT: do not remove script on unmount — leaving it prevents reloading when navigating back
+    // (TradingView manages its widget lifecycle)
+  }, [src, optionsKey, height]);
 
   return (
     <div
+      id={id}
       className={`tradingview-widget-container ${className}`}
       ref={containerRef}
       style={{ width: "100%", height: typeof height === "number" ? `${height}px` : height }}
@@ -175,22 +192,13 @@ export default function DashboardPage() {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex gap-2 sm:gap-4 font-medium flex-wrap">
-              <Link
-                href="/"
-                className="bg-gradient-to-r from-blue-400 to-blue-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
-              >
+              <Link href="/" className="bg-gradient-to-r from-blue-400 to-blue-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
                 Home
               </Link>
-              <Link
-                href="/payment"
-                className="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
-              >
+              <Link href="/payment" className="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
                 Deposit
               </Link>
-              <Link
-                href="/dashboard/withdraw"
-                className="bg-gradient-to-r from-red-400 to-red-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
-              >
+              <Link href="/dashboard/withdraw" className="bg-gradient-to-r from-red-400 to-red-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
                 Withdraw
               </Link>
             </div>
@@ -200,10 +208,7 @@ export default function DashboardPage() {
 
           <div className="flex items-center gap-2 sm:gap-4">
             <span className="font-semibold text-xs sm:text-sm">👤 {traderName}</span>
-            <a
-              href="tel:+1307432965"
-              className="bg-yellow-400 text-black font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg shadow-md text-xs sm:text-sm"
-            >
+            <a href="tel:+1307432965" className="bg-yellow-400 text-black font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg shadow-md text-xs sm:text-sm">
               📞 +1 307-432-965
             </a>
           </div>
@@ -244,10 +249,7 @@ export default function DashboardPage() {
               {/* Buy Package Card */}
               <Card className="rounded-2xl shadow-md hover:shadow-lg transition border border-black/5 overflow-hidden">
                 <CardContent className="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-4 sm:p-5 lg:p-6 min-h-[150px] flex items-center justify-center">
-                  <Link
-                    href="/upgrades"
-                    className="inline-flex items-center rounded-lg bg-yellow-400 text-black px-4 py-2 text-sm sm:text-base font-semibold shadow hover:bg-yellow-300 transition"
-                  >
+                  <Link href="/upgrades" className="inline-flex items-center rounded-lg bg-yellow-400 text-black px-4 py-2 text-sm sm:text-base font-semibold shadow hover:bg-yellow-300 transition">
                     {t("Buy Package")}
                   </Link>
                 </CardContent>
@@ -256,11 +258,10 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* ===================== CHARTS & LIVE SIGNALS ===================== */}
+        {/* ===================== CHARTS & ANALYSIS ===================== */}
         <section className="w-full">
           <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6 py-4 space-y-6">
-
-            {/* 1) LIVE SIGNALS — Technical Analysis (Buy/Sell/Strong) */}
+            {/* 1) Live Signals — Technical Analysis */}
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <h3 className="font-bold text-lg mb-3">Live Signals — Technical Analysis</h3>
@@ -273,6 +274,7 @@ export default function DashboardPage() {
                     <div key={symbol} className="rounded-lg border border-black/10 bg-white">
                       <div className="px-3 pt-3 font-semibold">{title}</div>
                       <TVWidget
+                        id={`ta-${symbol}`}
                         src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js"
                         height={400}
                         options={{
@@ -291,11 +293,12 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* 2) MARKET OVERVIEW — Tabbed Watchlists with Mini Charts */}
+            {/* 2) Market Overview */}
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <h3 className="font-bold text-lg mb-3">Market Overview</h3>
                 <TVWidget
+                  id="market-overview"
                   src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js"
                   height={520}
                   options={{
@@ -344,11 +347,12 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* 3) SYMBOL OVERVIEW — Clean Multi-Symbol Overview */}
+            {/* 3) Symbol Overview */}
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <h3 className="font-bold text-lg mb-3">Symbol Overview</h3>
                 <TVWidget
+                  id="symbol-overview"
                   src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js"
                   height={420}
                   options={{
@@ -376,7 +380,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Keep your existing advanced charts (candlesticks) */}
+            {/* 4) Advanced Charts */}
             <Card>
               <CardContent className="p-3 sm:p-4">
                 <h3 className="font-bold text-lg mb-3">Advanced Charts</h3>
@@ -412,15 +416,74 @@ export default function DashboardPage() {
               <CardContent className="flex flex-col items-center justify-center space-y-3 py-6">
                 <ShieldCheck className="w-10 h-10 text-green-400" />
                 <h3 className="text-xl font-bold">{t("dashboard.kycTitle")}</h3>
-                <p className="text-sm text-gray-300 text-center">
-                  {t("dashboard.kycDescription")}
-                </p>
-                <Link
-                  href="/kyc-verification"
-                  className="bg-yellow-400 text-black px-5 py-2 rounded-lg font-semibold shadow hover:bg-yellow-300 transition"
-                >
+                <p className="text-sm text-gray-300 text-center">{t("dashboard.kycDescription")}</p>
+                <Link href="/kyc-verification" className="bg-yellow-400 text-black px-5 py-2 rounded-lg font-semibold shadow hover:bg-yellow-300 transition">
                   {t("dashboard.verifyNow")}
                 </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* ===================== FUNDAMENTAL ANALYSIS (bottom) ===================== */}
+        <section className="w-full pb-12">
+          <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6">
+            <Card>
+              <CardContent className="p-3 sm:p-4">
+                <h3 className="font-bold text-lg mb-3">Live Signals — Fundamental Analysis</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Economic Calendar */}
+                  <div className="rounded-lg border border-black/10 bg-white p-3">
+                    <div className="px-1 pt-1 font-semibold mb-2">Economic Calendar</div>
+                    <TVWidget
+                      id="fundamental-events"
+                      src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
+                      height={500}
+                      options={{
+                        colorTheme: "light",
+                        isTransparent: false,
+                        width: "100%",
+                        height: 500,
+                        locale: "en",
+                        importanceFilter: "-1,0,1",
+                      }}
+                    />
+                  </div>
+
+                  {/* Market News (TradingView news headlines) */}
+                  <div className="rounded-lg border border-black/10 bg-white p-3">
+                    <div className="px-1 pt-1 font-semibold mb-2">Market News</div>
+                    <TVWidget
+                      id="fundamental-news"
+                      src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
+                      height={200}
+                      options={{
+                        symbols: [
+                          { proName: "FX:EURUSD", title: "EUR/USD" },
+                          { proName: "CRYPTO:BTCUSD", title: "BTC/USD" },
+                          { proName: "OANDA:XAUUSD", title: "XAU/USD" },
+                        ],
+                        showSymbolLogo: true,
+                        colorTheme: "light",
+                        isTransparent: false,
+                        displayMode: "adaptive",
+                        locale: "en",
+                      }}
+                    />
+
+                    {/* A simple news iframe (source: TradingView recent news iframes are not public; using a general headlines embed) */}
+                    <div className="mt-3">
+                      <iframe
+                        title="market-news"
+                        src={`https://www.bloomberg.com/markets`}
+                        className="w-full rounded-md"
+                        height={260}
+                        frameBorder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -434,8 +497,12 @@ export default function DashboardPage() {
           animation: marquee 30s linear infinite;
         }
         @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
         }
       `}</style>
     </div>

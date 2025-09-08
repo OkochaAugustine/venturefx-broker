@@ -1,23 +1,34 @@
-import React from "react";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+// Components
 import ChatBot from "./components/ChatBot";
 import LanguageSelector from "./components/LanguageSelector";
+import Providers from "./Providers";
 
-import { I18nextProvider } from "react-i18next";
-import i18n from "../lib/i18n";
-import type { Metadata } from "next";
+// Fonts
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-// ✅ Google fonts
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-
-// ✅ Metadata (only works in Server Components)
+// ✅ Metadata (without viewport)
 export const metadata: Metadata = {
   title: "VentureFX Broker",
   description: "Trade Forex, Crypto, and Stocks",
-  viewport:
-    "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+};
+
+// ✅ Viewport must be exported separately in Next.js 15
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({
@@ -28,10 +39,11 @@ export default function RootLayout({
   const DESKTOP_WIDTH = 1280;
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <I18nextProvider i18n={i18n}>
-          {/* ✅ Fixed desktop canvas */}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
           <div
             id="desktop-canvas"
             className="min-h-screen flex flex-col"
@@ -42,7 +54,7 @@ export default function RootLayout({
               background: "transparent",
             }}
           >
-            {/* Language selector always visible */}
+            {/* Language selector */}
             <LanguageSelector />
 
             {/* Page content */}
@@ -51,10 +63,8 @@ export default function RootLayout({
             {/* Global chatbot */}
             <ChatBot />
           </div>
-        </I18nextProvider>
+        </Providers>
       </body>
     </html>
   );
 }
-
-
