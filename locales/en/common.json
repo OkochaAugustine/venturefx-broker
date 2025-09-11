@@ -1,1 +1,9 @@
-{ "welcome": "Welcome" } 
+{
+  "dashboard": {
+    "sidebar": {
+      "dashboard": "Dashboard"
+    }
+  },
+  "welcomeBack": "Welcome back, {{name}}!"
+}
+
