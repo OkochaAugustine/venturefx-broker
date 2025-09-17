@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./responsive.css"; // ✅ Keep your responsive overrides
 
 // Components
 import ChatBot from "./components/ChatBot";
-import LanguageSelector from "./components/LanguageSelector";
 import Providers from "./Providers";
+import GoogleTranslate from "./components/GoogleTranslate";
 
 // Fonts
 const geistSans = Geist({
@@ -17,18 +18,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ Metadata (without viewport)
+// ✅ SEO + Meta
 export const metadata: Metadata = {
   title: "VentureFX Broker",
   description: "Trade Forex, Crypto, and Stocks",
 };
 
-// ✅ Viewport must be exported separately in Next.js 15
+// ✅ Viewport – matches sturdyfx style (no weird zoom issues)
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -36,31 +37,26 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const DESKTOP_WIDTH = 1280;
-
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* ✅ Meta tags for better mobile rendering */}
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="description" content="Join VentureFX and trade Forex, Crypto, and Stocks with ease." />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         <Providers>
-          <div
-            id="desktop-canvas"
-            className="min-h-screen flex flex-col"
-            style={{
-              width: DESKTOP_WIDTH,
-              minWidth: DESKTOP_WIDTH,
-              margin: "0 auto",
-              background: "transparent",
-            }}
-          >
-            {/* Language selector */}
-            <LanguageSelector />
+          {/* ✅ No hard max-width, just centered responsive container */}
+          <div className="min-h-screen flex flex-col w-full max-w-screen-2xl mx-auto overflow-x-hidden">
+            {/* ✅ Google Translate widget */}
+            <GoogleTranslate />
 
-            {/* Page content */}
-            <main className="flex-1">{children}</main>
+            {/* ✅ Page content – stays fluid, collapses properly */}
+            <main className="flex-1 w-full">{children}</main>
 
-            {/* Global chatbot */}
+            {/* ✅ Global ChatBot stays floating */}
             <ChatBot />
           </div>
         </Providers>
@@ -68,3 +64,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+

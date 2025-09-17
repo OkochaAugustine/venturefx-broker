@@ -4,9 +4,13 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 // ✅ Import JSON directly (because they're inside src/lib)
-import en from "./locales/en/common.json";
-import fr from "./locales/fr/common.json";
-import de from "./locales/de/common.json";
+   
+
+import en from "@/lib/locales/en/common.json";
+import fr from "@/lib/locales/fr/common.json";
+import de from "@/lib/locales/de/common.json";
+
+
 
 i18n.use(initReactI18next).init({
   resources: {

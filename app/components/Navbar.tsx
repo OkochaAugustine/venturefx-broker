@@ -54,6 +54,7 @@ export default function Navbar() {
     if (token) setUser("loggedIn");
   }, []);
 
+  // Fake live updates for ticker
   useEffect(() => {
     const interval = setInterval(() => {
       setPairs((prev) =>
@@ -94,7 +95,7 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex gap-4">
+        <div className="hidden md:flex gap-4 ml-4">
           {user ? (
             <>
               <Link
@@ -144,7 +145,9 @@ export default function Navbar() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                d={
+                  isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+                }
               />
             </svg>
           </button>
@@ -204,35 +207,77 @@ export default function Navbar() {
       )}
 
       {/* Live Ticker Bar */}
-      <div className="bg-black overflow-x-hidden whitespace-nowrap">
-        <div className="animate-marquee flex gap-12 px-6 py-2">
-          {pairs.map((p, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-sm min-w-[120px]">
-              <span className="font-semibold">{p.symbol}</span>
-              <span>{p.price}</span>
-              <span className={p.change >= 0 ? "text-green-400" : "text-red-400"}>
-                {p.change >= 0 ? "▲" : "▼"} {Math.abs(p.change)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <div className="bg-gradient-to-r from-gray-900 to-black overflow-hidden border-t border-b border-gray-700">
+        <div className="flex whitespace-nowrap">
+          {/* First row */}
+          <div className="animate-marquee flex gap-12 px-6 py-2">
+            {pairs.map((p, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 text-sm font-medium min-w-[140px]"
+              >
+                <span className="text-gray-300">{p.symbol}</span>
+                <span className="text-white">
+                  {(p.price - 0.001).toFixed(4)}
+                </span>{" "}
+                /
+                <span className="text-white">
+                  {(p.price + 0.001).toFixed(4)}
+                </span>
+                <span
+                  className={`ml-2 font-bold ${
+                    p.change >= 0 ? "text-green-400" : "text-red-400"
+                  }`}
+                >
+                  {p.change >= 0 ? "▲" : "▼"} {Math.abs(p.change)}
+                </span>
+              </div>
+            ))}
+          </div>
 
-      {/* CSS for infinite scroll */}
-      <style jsx>{`
-        .animate-marquee {
-          display: inline-flex;
-          animation: marquee 35s linear infinite;
-        }
-        @keyframes marquee {
-          0% {
-            transform: translateX(100%);
+          {/* Duplicate row for infinite loop */}
+          <div className="animate-marquee flex gap-12 px-6 py-2">
+            {pairs.map((p, idx) => (
+              <div
+                key={idx + "-dup"}
+                className="flex items-center gap-2 text-sm font-medium min-w-[140px]"
+              >
+                <span className="text-gray-300">{p.symbol}</span>
+                <span className="text-white">
+                  {(p.price - 0.001).toFixed(4)}
+                </span>{" "}
+                /
+                <span className="text-white">
+                  {(p.price + 0.001).toFixed(4)}
+                </span>
+                <span
+                  className={`ml-2 font-bold ${
+                    p.change >= 0 ? "text-green-400" : "text-red-400"
+                  }`}
+                >
+                  {p.change >= 0 ? "▲" : "▼"} {Math.abs(p.change)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CSS */}
+        <style jsx>{`
+          .animate-marquee {
+            display: inline-flex;
+            animation: marquee 50s linear infinite;
           }
-          100% {
-            transform: translateX(-100%);
+          @keyframes marquee {
+            0% {
+              transform: translateX(0%);
+            }
+            100% {
+              transform: translateX(-100%);
+            }
           }
-        }
-      `}</style>
+        `}</style>
+      </div>
     </header>
   );
 }

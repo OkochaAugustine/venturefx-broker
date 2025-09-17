@@ -1,7 +1,7 @@
 "use client";
 
 // import Sidebar from "@/components/Sidebar";
-import DashboardNavbar from "@/components/DashboardNavbar";
+import DashboardNavbarWrapper from "@/components/DashboardNavbarWrapper";
 
 export default function DashboardPagesLayout({
   children,
@@ -14,7 +14,7 @@ export default function DashboardPagesLayout({
       {/* <Sidebar /> */}
 
       <div className="flex-1">
-        <DashboardNavbar />
+        <DashboardNavbarWrapper />
         <main className="p-6">{children}</main>
       </div>
     </div>

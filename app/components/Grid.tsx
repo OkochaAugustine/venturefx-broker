@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
-interface CurrencyPair {
-  symbol: string
-  bid: number
-  ask: number
-}
+// Define Pair type
+export type Pair = {
+  symbol: string;
+  bid: number;
+  ask: number;
+};
 
-const initialPairs: CurrencyPair[] = [
+// Props for Grid
+type GridProps = {
+  data?: Pair[]; // optional, if you want to pass ticker data from parent
+};
+
+// Default initial pairs
+const initialPairs: Pair[] = [
   { symbol: "EUR/USD", bid: 1.0832, ask: 1.0836 },
   { symbol: "GBP/USD", bid: 1.2724, ask: 1.2729 },
   { symbol: "USD/JPY", bid: 146.82, ask: 146.86 },
@@ -25,32 +32,31 @@ const initialPairs: CurrencyPair[] = [
   { symbol: "XRP/USD", bid: 0.524, ask: 0.526 },
   { symbol: "BNB/USD", bid: 312.78, ask: 313.22 },
   { symbol: "SOL/USD", bid: 23.45, ask: 23.62 },
-]
+];
 
-export default function Grid() {
-  const [pairs, setPairs] = useState(initialPairs)
+export default function Grid({ data }: GridProps) {
+  const [pairs, setPairs] = useState<Pair[]>(data || initialPairs);
 
+  // Live updates
   useEffect(() => {
     const interval = setInterval(() => {
       setPairs((prev) =>
-        prev.map((p) => {
-          const bidNum = parseFloat(p.bid.toString())
-          const askNum = parseFloat(p.ask.toString())
-          return {
-            ...p,
-            bid: parseFloat((bidNum + (Math.random() - 0.5) * 0.01).toFixed(4)),
-            ask: parseFloat((askNum + (Math.random() - 0.5) * 0.01).toFixed(4)),
-          }
-        })
-      )
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [])
+        prev.map((p) => ({
+          ...p,
+          bid: parseFloat((p.bid + (Math.random() - 0.5) * 0.01).toFixed(4)),
+          ask: parseFloat((p.ask + (Math.random() - 0.5) * 0.01).toFixed(4)),
+        }))
+      );
+    }, 2000);
 
-  const chunkSize = Math.ceil(pairs.length / 4)
+    return () => clearInterval(interval);
+  }, []);
+
+  // Group pairs into 4 columns
+  const chunkSize = Math.ceil(pairs.length / 4);
   const groupedPairs = Array.from({ length: 4 }, (_, i) =>
     pairs.slice(i * chunkSize, (i + 1) * chunkSize)
-  )
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
@@ -72,6 +78,6 @@ export default function Grid() {
         </Card>
       ))}
     </div>
-  )
+  );
 }
 

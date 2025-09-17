@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "trades": "Trades",
+      "history": "History",
+      "botTrades": "Bot Trades",
+      "transactions": "Transactions",
+      "upgrades": "Upgrades",
+      "helpSupport": "Help & Support",
+      "kyc": "KYC Verification"
+    },
+    "kycTitle": "KYC Verification Required",
+    "kycDescription": "Please verify your identity to unlock all features",
+    "verifyNow": "Verify Now"
+  },
+  "home": "Home",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "Account Balance": "Account Balance",
+  "Active Deposit": "Active Deposit",
+  "Earned Profit": "Earned Profit",
+  "Account Status: Active": "Account Status: Active",
+  "Buy Package": "Buy Package"
+}
+
+

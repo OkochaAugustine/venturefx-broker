@@ -1,21 +1,23 @@
 "use client"
+
 import { useState, useEffect } from "react"
-import Navbar from "@/app/components/Navbar"
-import Hero from "@/app/components/Hero"
-import Ticker from "@/app/components/Ticker"
-import MarketAnalysis from "@/app/components/MarketAnalysis"
-import Features from "@/app/components/Features"
-import Experience from "@/app/components/Experience"
-import Footer from "@/app/components/Footer"
-import Loading from "@/app/components/Loading"
 
-import MarketTicker from "@/app/components/MarketTicker"
-import Packages from "@/app/components/Packages"
-import FastAccount from "@/app/components/FastAccount"
-import LiveCharts from "@/app/components/LiveCharts"
-import Stats from "@/app/components/Stats"
-import ChatBot from "@/app/components/ChatBot"
+// ✅ Updated imports to point to app/components
+import Navbar from "./components/Navbar"
+import Hero from "./components/Hero"
+import Ticker from "./components/Ticker"
+import MarketAnalysis from "./components/MarketAnalysis"
+import Features from "./components/Features"
+import Experience from "./components/Experience"
+import Footer from "./components/Footer"
+import Loading from "./components/Loading"
 
+import MarketTicker from "./components/MarketTicker"
+import Packages from "./components/Packages"
+import FastAccount from "./components/FastAccount"
+import LiveCharts from "./components/LiveCharts"
+import Stats from "./components/Stats"
+import ChatBot from "./components/ChatBot"
 
 export default function Home() {
   const [loading, setLoading] = useState(true)
@@ -45,6 +47,7 @@ export default function Home() {
     </main>
   )
 }
+
 
 
 

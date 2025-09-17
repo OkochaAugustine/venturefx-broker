@@ -1,0 +1,17 @@
+{
+  "home": "Home",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "dashboard": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "trades": "Trades",
+      "history": "Live Trade History",
+      "botTrades": "BOT Trades",
+      "transactions": "Transactions",
+      "upgrades": "Upgrades",
+      "helpSupport": "Help / Support",
+      "kyc": "KYC Verification"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { MessageCircle, X } from "lucide-react"  // ✅ Lucide instead of react-icons
+import { MessageCircle, X } from "lucide-react"
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false)
@@ -11,25 +11,27 @@ export default function ChatBot() {
     if (!input.trim()) return
     setMessages([...messages, { sender: "You", text: input }])
     setInput("")
-    // simple bot auto-reply
     setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: "Bot", text: "Thanks for your message! Our support team will get back to you soon." }])
+      setMessages(prev => [
+        ...prev,
+        { sender: "Bot", text: "Thanks for your message! Our support team will get back to you soon." }
+      ])
     }, 1000)
   }
 
   return (
-    <>
+    <div className="fixed bottom-0 right-0 z-50">
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition z-50"
+        className="absolute bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition"
       >
         {open ? <X size={24} /> : <MessageCircle size={24} />}
       </button>
 
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden z-50">
+        <div className="absolute bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden">
           <div className="bg-red-600 text-white p-3 font-semibold">Trader Support</div>
           <div className="flex-1 p-3 overflow-y-auto max-h-64 space-y-2">
             {messages.map((msg, i) => (
@@ -39,7 +41,7 @@ export default function ChatBot() {
                   msg.sender === "You" ? "bg-red-600 text-white ml-auto" : "bg-gray-200 text-gray-800"
                 }`}
               >
-                <strong>{msg.sender}:</strong> <span>{msg.text}</span>
+                <strong>{msg.sender}:</strong> {msg.text}
               </div>
             ))}
           </div>
@@ -52,13 +54,16 @@ export default function ChatBot() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
-            <button onClick={handleSend} className="bg-red-600 text-white px-3 rounded-md hover:bg-red-700">
+            <button
+              onClick={handleSend}
+              className="bg-red-600 text-white px-3 rounded-md hover:bg-red-700"
+            >
               Send
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

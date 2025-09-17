@@ -1,8 +1,0 @@
-{
-  "dashboard": {
-    "sidebar": {
-      "dashboard": "Tableau de bord"
-    }
-  },
-  "welcomeBack": "Bienvenue, {{name}}!"
-}

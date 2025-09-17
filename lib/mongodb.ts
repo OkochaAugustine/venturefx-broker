@@ -1,27 +1,32 @@
-// lib/mongodb.ts
-import { MongoClient } from "mongodb"
+import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI
-const options = {}
+const uri = process.env.MONGODB_URI;
+if (!uri) throw new Error("MONGODB_URI is not defined");
 
-let client: MongoClient
-let clientPromise: Promise<MongoClient>
+const options = {};
 
-// ✅ Only connect if URI exists
-if (uri) {
-  if (process.env.NODE_ENV === "development") {
-    if (!(global as any)._mongoClientPromise) {
-      client = new MongoClient(uri, options)
-      ;(global as any)._mongoClientPromise = client.connect()
-    }
-    clientPromise = (global as any)._mongoClientPromise
-  } else {
-    clientPromise = new MongoClient(uri, options).connect()
-  }
-} else {
-  clientPromise = Promise.reject("⚠️ No MONGODB_URI set")
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+declare global {
+  // allow global _mongoClientPromise for hot-reloading in dev
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-export default clientPromise
+if (process.env.NODE_ENV === "development") {
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect().then(() => client);
+  }
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect().then(() => client);
+}
+
+export default clientPromise;
+
+
+
 
 

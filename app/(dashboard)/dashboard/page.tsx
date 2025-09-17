@@ -1,7 +1,19 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import Grid, { Pair } from "@/components/Grid";
+import { Card,  CardContent } from "@/components/ui/card";
+import TradingViewAdvancedChart from "@/components/TradingViewAdvancedChart";
+import ClientOnly from "@/components/ClientOnly";
+
+
+// import Sidebar from "@/components/Sidebar";
+import TradingViewChart from "@/components/TradingViewChart";
+import TradingViewBTCChart from "@/components/TradingViewBTCChart";
+// import MarketSection from "@/components/MarketSection";
+import Grid from "@/components/Grid";
+
+
+
+
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
@@ -18,6 +30,19 @@ import {
 } from "lucide-react";
 
 import { useTranslation } from "react-i18next";
+ 
+
+
+// -------------------- Define Pair type locally --------------------
+type Pair = {
+  symbol: string;
+  bid: number;
+  ask: number;
+  spread: number;
+};
+
+
+
 
 /* ---------------------- TRADINGVIEW GENERIC EMBED (stable) ---------------------- */
 /**
@@ -43,23 +68,20 @@ function TVWidget({
 
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // If it's already loaded, stop (prevents blinking/re-injection)
     if (containerRef.current.dataset.loaded === "true") return;
 
-    // Create widget container
     const widgetDiv = document.createElement("div");
     widgetDiv.className = "tradingview-widget-container__widget";
     widgetDiv.style.height = typeof height === "number" ? `${height}px` : String(height);
     containerRef.current.appendChild(widgetDiv);
 
-    // Create script tag
     const script = document.createElement("script");
     script.src = src;
     script.type = "text/javascript";
     script.async = true;
     script.innerHTML = optionsKey;
     containerRef.current.appendChild(script);
+
 
     // Mark loaded so we don't re-initialize
     containerRef.current.dataset.loaded = "true";
@@ -79,18 +101,58 @@ function TVWidget({
 }
 
 /* --------------------------- TICKER COMPONENT --------------------------- */
+/* --------------------------- TICKER COMPONENT --------------------------- */
 function Ticker({ data }: { data: Pair[] }) {
   const extended = [...data, ...data];
+
   return (
     <div className="overflow-hidden flex-1 mx-2 sm:mx-6">
-      <div className="animate-marquee whitespace-nowrap flex gap-6 sm:gap-8">
+      <div className="animate-marquee whitespace-nowrap flex gap-8 sm:gap-12">
         {extended.map((p, index) => (
-          <span key={p.symbol + index} className="text-xs sm:text-sm">
-            {p.symbol}: <span className="text-green-300">Bid {p.bid}</span> |{" "}
-            <span className="text-red-300">Ask {p.ask}</span>
+          <span
+            key={p.symbol + index}
+            className="flex items-center gap-2 text-xs sm:text-sm font-mono"
+          >
+            <span className="font-bold text-blue-300">{p.symbol}</span>
+            <span className="text-green-400">
+              Bid {p.bid.toFixed(4)}
+            </span>
+            <span className="text-red-400">
+              Ask {p.ask.toFixed(4)}
+            </span>
+            <span className="text-yellow-300">
+              Spread {p.spread.toFixed(4)}
+            </span>
           </span>
         ))}
       </div>
+
+      {/* Glow flash effect */}
+      <style jsx>{`
+        .price-flash {
+          animation: flash 0.4s ease-in-out;
+        }
+        @keyframes flash {
+          0% {
+            background-color: rgba(255, 255, 255, 0.2);
+          }
+          100% {
+            background-color: transparent;
+          }
+        }
+        .animate-marquee {
+          display: inline-flex;
+          animation: marquee 40s linear infinite;
+        }
+        @keyframes marquee {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -110,11 +172,16 @@ const pairs: Pair[] = [
   { symbol: "XAG/USD", bid: 24.35, ask: 24.4, spread: 0.05 },
 ];
 
+
+
 export default function DashboardPage() {
   const [ticker, setTicker] = useState<Pair[]>(pairs);
   const [traderName, setTraderName] = useState("Loading...");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { t } = useTranslation();
+
+  // ✅ NEW STATE for full user info
+  const [user, setUser] = useState<any>(null);
 
   // Load user name from localStorage
   useEffect(() => {
@@ -126,6 +193,43 @@ export default function DashboardPage() {
       setTraderName("Guest");
     }
   }, []);
+
+  // ✅ NEW EFFECT to fetch user balance from API
+
+
+// ✅ Fetch user data & auto-refresh every 5s
+  
+
+useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) return;
+
+  const userObj = JSON.parse(storedUser);
+  if (!userObj._id) {
+    console.error("❌ No _id found in localStorage user:", userObj);
+    return;
+  }
+
+  async function fetchUser() {
+    try {
+      console.log("🔍 GET fetching user with ID:", userObj._id);
+      const res = await fetch(`/api/users/${userObj._id}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        console.log("✅ User fetched:", data);
+        setUser(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+    }
+  }
+
+  fetchUser(); // initial load
+  const interval = setInterval(fetchUser, 5000);
+  return () => clearInterval(interval);
+}, []);
+
+
 
   // Live price updates (mock)
   useEffect(() => {
@@ -161,74 +265,102 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        <nav className="space-y-2 text-sm font-medium">
-          {[
-            { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-            { name: "Trades", icon: LineChart, href: "/trades" },
-            { name: "Live Trade History", icon: History, href: "/history" },
-            { name: "BOT Trades", icon: Bot, href: "/bot-trades" },
-            { name: "Transactions", icon: Receipt, href: "/transactions" },
-            { name: "Upgrades", icon: Star, href: "/upgrades" },
-            { name: "Help/Support", icon: HelpCircle, href: "/help-support" },
-            { name: "KYC Verification", icon: ShieldCheck, href: "/kyc-verification" },
-          ].map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition"
-            >
-              <item.icon className="w-5 h-5" /> {item.name}
-            </Link>
-          ))}
-        </nav>
+      <nav className="space-y-2 text-sm font-medium">
+  {[
+{ key: "dashboard", name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+{ key: "trades", name: "Trades", icon: LineChart, href: "/trades" },
+{ key: "history", name: "History", icon: History, href: "/history" },
+{ key: "botTrades", name: "Bot Trades", icon: Bot, href: "/bot-trades" },
+{ key: "transactions", name: "Transactions", icon: Receipt, href: "/transactions" },
+{ key: "upgrades", name: "Upgrades", icon: Star, href: "/upgrades" },
+{ key: "helpSupport", name: "Help & Support", icon: HelpCircle, href: "/help-support" },
+{ key: "kyc", name: "KYC Verification", icon: ShieldCheck, href: "/kyc-verification" },
+
+
+
+  ].map((item) => (
+    <Link
+  key={item.key}
+  href={item.href}
+  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition"
+>
+  <item.icon className="w-5 h-5" />{' '}
+  <span suppressHydrationWarning>{item.name}</span>
+</Link>
+
+  ))}
+</nav>
+
       </aside>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col md:ml-64 w-full">
         {/* Top bar */}
-        <header className="bg-blue-600 text-white px-4 py-3 flex flex-wrap items-center justify-between shadow-md w-full">
-          <div className="flex items-center gap-3">
-            <button className="md:hidden text-white" onClick={() => setSidebarOpen(true)}>
-              <Menu className="w-6 h-6" />
-            </button>
-            <div className="flex gap-2 sm:gap-4 font-medium flex-wrap">
-              <Link href="/" className="bg-gradient-to-r from-blue-400 to-blue-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
-                Home
-              </Link>
-              <Link href="/payment" className="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
-                Deposit
-              </Link>
-              <Link href="/dashboard/withdraw" className="bg-gradient-to-r from-red-400 to-red-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base">
-                Withdraw
-              </Link>
-            </div>
-          </div>
+       <header className="bg-blue-600 text-white px-4 py-3 flex flex-wrap items-center justify-between shadow-md w-full">
+  <div className="flex items-center gap-3">
+    <button className="md:hidden text-white" onClick={() => setSidebarOpen(true)}>
+      <Menu className="w-6 h-6" />
+    </button>
+    <div className="flex gap-2 sm:gap-4 font-medium flex-wrap">
+      <Link
+        href="/"
+        className="bg-gradient-to-r from-blue-400 to-blue-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
+      >
+        {t("home")}
+      </Link>
+      <Link
+        href="/payment"
+        className="bg-gradient-to-r from-green-400 to-green-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
+      >
+        {t("deposit")}
+      </Link>
+      <Link
+        href="/dashboard/withdraw"
+        className="bg-gradient-to-r from-red-400 to-red-600 text-white px-3 py-1 rounded-lg text-sm sm:text-base"
+      >
+        {t("withdraw")}
+      </Link>
+    </div>
+  </div>
 
-          <Ticker data={ticker} />
+  <div className="flex items-center gap-2 sm:gap-4">
+    <span className="font-semibold text-xs sm:text-sm">👤 {traderName}</span>
+    <a
+      href="tel:+1307432965"
+      className="bg-yellow-400 text-black font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg shadow-md text-xs sm:text-sm"
+    >
+      📞 +1 307-432-965
+    </a>
+  </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <span className="font-semibold text-xs sm:text-sm">👤 {traderName}</span>
-            <a href="tel:+1307432965" className="bg-yellow-400 text-black font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg shadow-md text-xs sm:text-sm">
-              📞 +1 307-432-965
-            </a>
-          </div>
-        </header>
+  {/* ✅ Single Ticker placed inside the header */}
+  <div className="w-full bg-gray-900 text-white py-2">
+    <Ticker data={ticker} />
+  </div>
+</header>
 
-        {/* Live Prices Grid */}
+{/* <div className="w-full bg-gray-900 text-white py-2">
+  <Ticker data={ticker} />
+</div> */}
+
+{/* 
+        Live Prices Grid
         <section className="w-full">
-          <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6 py-4">
-            <Grid data={ticker} />
-          </div>
-        </section>
+  <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6 py-4">
+    <Grid data={ticker} />
+  </div>
+</section> */}
 
         {/* KPI Cards */}
         <section className="w-full">
           <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6 pb-4">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
-                { value: "$5.00", label: t("Account Balance"), color: "from-purple-500 to-purple-700" },
-                { value: "$0.00", label: t("Active Deposit"), color: "from-orange-400 to-orange-600" },
-                { value: "$0.00", label: t("Earned Profit"), color: "from-green-500 to-green-700" },
+                
+            { value: `$${user?.balance ?? 0}`, label: t("Account Balance"), color: "from-purple-500 to-purple-700" },
+            { value: `$${user?.activeDeposit ?? 0}`, label: t("Active Deposit"), color: "from-orange-400 to-orange-600" },
+              { value: `$${user?.earnedProfit ?? 0}`, label: t("Earned Profit"), color: "from-green-500 to-green-700" },
+
               ].map((card, i) => (
                 <Card key={i} className="rounded-2xl shadow-md hover:shadow-lg transition border border-black/5 overflow-hidden">
                   <CardContent className={`bg-gradient-to-br ${card.color} text-white p-4 sm:p-5 lg:p-6 min-h-[150px] flex`}>
@@ -410,20 +542,48 @@ export default function DashboardPage() {
         </section>
 
         {/* KYC Card */}
-        <section className="w-full pb-8">
-          <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6">
-            <Card className="bg-gradient-to-r from-gray-700 to-gray-900 text-white shadow-lg rounded-xl">
-              <CardContent className="flex flex-col items-center justify-center space-y-3 py-6">
-                <ShieldCheck className="w-10 h-10 text-green-400" />
-                <h3 className="text-xl font-bold">{t("dashboard.kycTitle")}</h3>
-                <p className="text-sm text-gray-300 text-center">{t("dashboard.kycDescription")}</p>
-                <Link href="/kyc-verification" className="bg-yellow-400 text-black px-5 py-2 rounded-lg font-semibold shadow hover:bg-yellow-300 transition">
-                  {t("dashboard.verifyNow")}
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+{/* Live Charts below KYC */}
+<section className="w-full pb-8">
+  <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 lg:px-6 space-y-6">
+
+    {/* Chart 1: EUR/USD with indicators */}
+    <Card>
+      <CardContent className="p-3 sm:p-4">
+        <h3 className="font-bold text-lg mb-3">EUR/USD — Advanced Chart</h3>
+        <ClientOnly>
+          <TradingViewAdvancedChart
+            containerId="eurusd_chart"
+            symbol="FX:EURUSD"
+            interval="D"
+            theme="light"
+            height={500}
+            studies={["MASimple@tv-basicstudies", "RSI@tv-basicstudies"]}
+          />
+        </ClientOnly>
+      </CardContent>
+    </Card>
+
+    {/* Chart 2: BTC/USD with indicators */}
+    <Card>
+      <CardContent className="p-3 sm:p-4">
+        <h3 className="font-bold text-lg mb-3">BTC/USD — Advanced Chart</h3>
+        <ClientOnly>
+          <TradingViewAdvancedChart
+            containerId="btcusd_chart"
+            symbol="CRYPTO:BTCUSD"
+            interval="D"
+            theme="light"
+            height={500}
+            studies={["MASimple@tv-basicstudies", "BB@tv-basicstudies"]}
+          />
+        </ClientOnly>
+      </CardContent>
+    </Card>
+
+  </div>
+</section>
+
+
 
         {/* ===================== FUNDAMENTAL ANALYSIS (bottom) ===================== */}
         <section className="w-full pb-12">
