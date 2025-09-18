@@ -19,7 +19,6 @@ export default function Navbar() {
     { symbol: "USD/CAD", price: 1.354, change: 0.0009 },
     { symbol: "USD/CHF", price: 0.905, change: -0.0007 },
     { symbol: "NZD/USD", price: 0.612, change: 0.0004 },
-
     // Crypto
     { symbol: "BTC/USD", price: 64000, change: -250 },
     { symbol: "ETH/USD", price: 3200, change: 15 },
@@ -28,14 +27,12 @@ export default function Navbar() {
     { symbol: "SOL/USD", price: 145, change: 2.1 },
     { symbol: "BNB/USD", price: 590, change: -5.4 },
     { symbol: "ADA/USD", price: 0.38, change: 0.02 },
-
     // Commodities
     { symbol: "XAU/USD", price: 2025, change: 5.5 },
     { symbol: "XAG/USD", price: 23.75, change: -0.12 },
     { symbol: "WTI/USD", price: 78.25, change: -0.5 },
     { symbol: "NG/USD", price: 2.65, change: 0.07 },
     { symbol: "PLAT/USD", price: 880, change: -2.5 },
-
     // Indices
     { symbol: "S&P 500", price: 5200, change: 12 },
     { symbol: "NASDAQ 100", price: 17650, change: -40 },
@@ -73,10 +70,46 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[#0d1b2a] text-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-red-500">
-          VentureWise Brokers
-        </Link>
+        {/* Logo with hover scale */}
+       <Link
+  href="/"
+  className="flex items-center gap-3 hover:scale-110 transition-transform duration-500 ease-out"
+>
+  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 p-1">
+    <img
+      src="/images/logo3.png"
+      alt="VentureWise Logo"
+      className="w-full h-full object-contain"
+    />
+  </div>
+
+  {/* Animated Text */}
+  <span
+    className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-gradient"
+    style={{ fontFamily: "'Pacifico', cursive" }}
+  >
+    VentureWise
+  </span>
+
+  <style jsx>{`
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    .animate-gradient {
+      background-size: 300% 300%;
+      animation: gradient 6s ease infinite;
+    }
+  `}</style>
+</Link>
+
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-8 text-sm font-medium">
@@ -146,7 +179,9 @@ export default function Navbar() {
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d={
-                  isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+                  isOpen
+                    ? "M6 18L18 6M6 6l12 12"
+                    : "M4 6h16M4 12h16M4 18h16"
                 }
               />
             </svg>

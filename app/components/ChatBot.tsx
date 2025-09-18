@@ -22,30 +22,44 @@ export default function ChatBot() {
   return (
     <div className="fixed bottom-0 right-0 z-50">
       {/* Floating button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="absolute bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition"
-      >
-        {open ? <X size={24} /> : <MessageCircle size={24} />}
-      </button>
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-6 right-6 bg-red-600 text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition"
+        >
+          <MessageCircle size={24} />
+        </button>
+      )}
 
-      {/* Chat window */}
+      {/* Fullscreen Chat Window */}
       {open && (
-        <div className="absolute bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden">
-          <div className="bg-red-600 text-white p-3 font-semibold">Trader Support</div>
-          <div className="flex-1 p-3 overflow-y-auto max-h-64 space-y-2">
+        <div className="fixed inset-0 bg-white flex flex-col shadow-xl">
+          {/* Header */}
+          <div className="bg-red-600 text-white p-4 flex justify-between items-center">
+            <h2 className="font-semibold text-lg">Trader Support</h2>
+            <button onClick={() => setOpen(false)}>
+              <X size={28} />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`p-2 rounded-lg max-w-[80%] ${
-                  msg.sender === "You" ? "bg-red-600 text-white ml-auto" : "bg-gray-200 text-gray-800"
+                className={`p-3 rounded-lg max-w-[75%] ${
+                  msg.sender === "You"
+                    ? "ml-auto bg-red-600 text-white"
+                    : "mr-auto bg-gray-300 text-gray-900"
                 }`}
               >
                 <strong>{msg.sender}:</strong> {msg.text}
               </div>
             ))}
           </div>
-          <div className="p-2 border-t flex gap-2">
+
+          {/* Input Area */}
+          <div className="p-3 border-t flex gap-2 bg-white">
             <input
               type="text"
               className="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -56,7 +70,7 @@ export default function ChatBot() {
             />
             <button
               onClick={handleSend}
-              className="bg-red-600 text-white px-3 rounded-md hover:bg-red-700"
+              className="bg-red-600 text-white px-4 rounded-md hover:bg-red-700"
             >
               Send
             </button>
@@ -66,4 +80,5 @@ export default function ChatBot() {
     </div>
   )
 }
+
 

@@ -1,45 +1,27 @@
 "use client";
 
-import { ReactNode, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import DashboardNavbarWrapper from "@/components/DashboardNavbarWrapper";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface DashboardClientLayoutProps {
-  children: ReactNode;
-}
-
-export default function DashboardClientLayout({ children }: DashboardClientLayoutProps) {
-  const DESKTOP_WIDTH = 1280; // ✅ moved here, no props needed
+export default function DashboardClientLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [scale, setScale] = useState(1);
   const pathname = usePathname();
 
-  // Loader
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 1200);
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200); // ⏳ Adjust duration for transitions
+
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  // Mobile scale
-  useEffect(() => {
-    function handleResize() {
-      if (window.innerWidth < DESKTOP_WIDTH) {
-        setScale(window.innerWidth / DESKTOP_WIDTH);
-      } else {
-        setScale(1);
-      }
-    }
-
-    handleResize(); // initial call
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col relative">
-      {/* Loader */}
+      {/* ✅ Page loader */}
       <AnimatePresence mode="wait">
         {loading && (
           <motion.div
@@ -57,32 +39,23 @@ export default function DashboardClientLayout({ children }: DashboardClientLayou
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-lg font-semibold tracking-wide">Loading Dashboard...</p>
+              <p className="text-lg font-semibold tracking-wide">
+                Loading Dashboard...
+              </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Navbar */}
+      {/* ✅ Navbar wrapper */}
       <DashboardNavbarWrapper />
 
-      {/* Main content with scaling */}
-      <main
-        className="flex-1 bg-gray-50"
-        style={{
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-          width: DESKTOP_WIDTH,
-          minWidth: DESKTOP_WIDTH,
-          margin: "0 auto",
-        }}
-      >
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">{children}</div>
+      {/* ✅ Responsive layout */}
+      <main className="flex-1 bg-gray-50">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {children}
+        </div>
       </main>
     </div>
   );
 }
-
-
-
-

@@ -17,13 +17,20 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@/lib/*": ["lib/*"],           // <-- updated path to new lib folder
+      "@/lib/*": ["lib/*"],
       "@/components/*": ["app/components/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "app/**/*",          // <-- ensures TS sees files in (dashboard)
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }
+
 
 
 

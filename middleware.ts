@@ -1,36 +1,33 @@
-// middleware.ts
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import { jwtVerify } from "jose"
-
-const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+// middleware.ts (must be in the project root!)
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+  const token = req.cookies.get("token")?.value;
 
-  // Only protect /dashboard routes
-  if (pathname.startsWith("/dashboard")) {
-    const token = req.cookies.get("token")?.value
-
+  // Protect admin dashboard route
+  if (req.nextUrl.pathname.startsWith("/dashboard/admin")) {
     if (!token) {
-      // No token → redirect to login
-      return NextResponse.redirect(new URL("/login", req.url))
+      // Not logged in → redirect to login
+      return NextResponse.redirect(new URL("/login", req.url));
     }
 
     try {
-      // ✅ Verify token with jose
-      await jwtVerify(token, secret)
-      return NextResponse.next()
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      await jwtVerify(token, secret);
+      // ✅ Token is valid → allow access
+      return NextResponse.next();
     } catch (err) {
-      console.error("JWT verification failed:", err)
-      return NextResponse.redirect(new URL("/login", req.url))
+      console.error("JWT verification failed:", err);
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
-// ✅ Configure matcher for dashboard routes
+// Apply middleware only to admin routes
 export const config = {
-  matcher: ["/dashboard/:path*"],
-}
+  matcher: ["/dashboard/admin/:path*"],
+};
