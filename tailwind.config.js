@@ -8,19 +8,26 @@ module.exports = {
   ],
   theme: {
     screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px"
+      sm: "640px",   // UIkit "s"
+      md: "960px",   // UIkit "m"
+      lg: "1200px",  // UIkit "l"
+      xl: "1600px"   // UIkit "xl"
     },
     container: {
       center: true,
-      padding: "1rem"
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        md: "2rem",
+        lg: "3rem",
+        xl: "4rem"
+      },
     },
     extend: {
+      maxWidth: {
+        container: "1440px", // similar to SturdyFX’s boxed layout
+      },
       spacing: {
-        // Full spacing scale to avoid --spacing errors
         px: "1px",
         0: "0px",
         1: "0.25rem",
