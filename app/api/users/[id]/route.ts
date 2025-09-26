@@ -5,10 +5,10 @@ import { NextResponse } from "next/server";
 // ---------------- GET ----------------
 export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> } // 👈 must be Promise
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params; // 👈 await it
+    const { id } = params; // ✅ no await
     console.log("🔍 GET fetching user with ID:", id);
 
     if (!id || !ObjectId.isValid(id)) {
@@ -34,10 +34,10 @@ export async function GET(
     }
 
     return NextResponse.json(user, { status: 200 });
-  } catch (err) {
+  } catch (err: any) {
     console.error("❌ GET /api/users/[id] error:", err);
     return NextResponse.json(
-      { success: false, message: "Server error" },
+      { success: false, message: "Server error", error: err.message },
       { status: 500 }
     );
   }
@@ -46,10 +46,10 @@ export async function GET(
 // ---------------- PUT ----------------
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> } // 👈 must be Promise
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params; // 👈 await
+    const { id } = params; // ✅ no await
     const body = await req.json();
 
     if (!id || !ObjectId.isValid(id)) {
@@ -85,10 +85,10 @@ export async function PUT(
       { success: true, updated: result.modifiedCount > 0 },
       { status: 200 }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("❌ PUT /api/users/[id] error:", err);
     return NextResponse.json(
-      { success: false, message: "Server error" },
+      { success: false, message: "Server error", error: err.message },
       { status: 500 }
     );
   }

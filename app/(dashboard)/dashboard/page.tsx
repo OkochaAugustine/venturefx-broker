@@ -35,7 +35,6 @@ const DashboardPage: React.FC = () => {
   // ✅ Fetch latest user from backend
   const fetchUserData = async (id: string) => {
     try {
-      console.log("🔍 GET fetching user with ID:", id);
       const res = await fetch(`/api/users/${id}`);
       if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
       const updated = await res.json();
@@ -45,14 +44,13 @@ const DashboardPage: React.FC = () => {
         updated.fullname || updated.username || updated.email || "Guest"
       );
 
-      // update localStorage so it's always fresh
       localStorage.setItem("user", JSON.stringify(updated));
     } catch (err) {
       console.error("❌ Error fetching user:", err);
     }
   };
 
-  // ✅ Load user from localStorage & set interval refresh
+  // ✅ Load user from localStorage & refresh
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -73,17 +71,12 @@ const DashboardPage: React.FC = () => {
             email: u.email,
           });
 
-          // fetch latest immediately
           fetchUserData(u._id);
-
-          // 🔄 refresh every 5 seconds
           const interval = setInterval(() => fetchUserData(u._id), 5000);
           return () => clearInterval(interval);
-        } else {
-          console.error("❌ No valid user ID found in localStorage");
         }
       } catch (err) {
-        console.error("❌ Failed to parse user from localStorage:", err);
+        console.error("❌ Failed to parse user:", err);
       }
     }
   }, []);
@@ -219,43 +212,36 @@ const DashboardPage: React.FC = () => {
     >
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform ${
-          darkMode ? "bg-gray-800" : "bg-[#03182d] text-white"
-        } transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
+        bg-white/40 backdrop-blur-2xl border-r border-white/30 shadow-2xl
+        lg:relative lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-4 font-extrabold text-xl border-b border-gray-700">
+        <div className="p-6 text-2xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
           {traderName}
         </div>
-        <nav className="p-4 space-y-6 font-extrabold text-lg tracking-wide">
-          <Link href="/dashboard" className="block py-2 hover:text-blue-400">
-            Dashboard
-          </Link>
-          <Link href="/trades" className="block py-2 hover:text-blue-400">
-            Trades
-          </Link>
-          <Link href="/bot-trades" className="block py-2 hover:text-blue-400">
-            BOT Trades History
-          </Link>
-          <Link
-            href="/transactions"
-            className="block py-2 hover:text-blue-400"
-          >
-            Transactions History
-          </Link>
-          <Link href="/upgrades" className="block py-2 hover:text-blue-400">
-            Upgrade
-          </Link>
-          <Link href="/news" className="block py-2 hover:text-blue-400">
-            News
-          </Link>
-          <Link
-            href="/help-support"
-            className="block py-2 hover:text-blue-400"
-          >
-            Help/Support
-          </Link>
+
+        <nav className="flex flex-col gap-4 p-4">
+          {[
+            { name: "Dashboard", href: "/dashboard" },
+            { name: "Trades", href: "/trades" },
+            { name: "BOT Trades History", href: "/bot-trades" },
+            { name: "Transactions History", href: "/transactions" },
+            { name: "Upgrade", href: "/upgrades" },
+            { name: "News", href: "/news" },
+            { name: "Help/Support", href: "/help-support" },
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90
+              text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl
+              transition-all duration-300 ease-out"
+            >
+              {link.name}
+            </Link>
+          ))}
         </nav>
       </aside>
 
@@ -324,9 +310,7 @@ const DashboardPage: React.FC = () => {
               <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
             </label>
 
-            <div className="flex items-center">
-              <GoogleTranslate />
-            </div>
+            <GoogleTranslate />
 
             <Link
               href="/kyc-verification"
@@ -457,4 +441,3 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
-

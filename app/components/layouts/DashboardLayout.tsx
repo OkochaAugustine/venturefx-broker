@@ -30,44 +30,68 @@ export default function DashboardLayout({
     >
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform ${
-          darkMode ? "bg-gray-800" : "bg-[#03182d] text-white"
-        } transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
+        bg-white/40 backdrop-blur-2xl border-r border-white/30 shadow-2xl
+        lg:relative lg:translate-x-0 
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="p-4 font-bold text-xl border-b border-gray-700">
+        <div className="p-6 text-2xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
           {traderName}
         </div>
-        <nav className="p-4 space-y-4">
-          <Link href="/dashboard" className="block hover:text-blue-400">
+
+        <nav className="flex flex-col gap-4 p-4">
+          <Link
+            href="/dashboard"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             Dashboard
           </Link>
-          <Link href="/trades" className="block hover:text-blue-400">
+          <Link
+            href="/trades"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             Trades
           </Link>
-          <Link href="/bot-trades" className="block hover:text-blue-400">
+          <Link
+            href="/bot-trades"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             BOT Trades History
           </Link>
-          <Link href="/transactions" className="block hover:text-blue-400">
+          <Link
+            href="/transactions"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             Transactions History
           </Link>
-          <Link href="/upgrades" className="block hover:text-blue-400">
+          <Link
+            href="/upgrades"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             Upgrade
           </Link>
-          <Link href="/news" className="block hover:text-blue-400">
+          <Link
+            href="/news"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             News
           </Link>
-          <Link href="/help-support" className="block hover:text-blue-400">
+          <Link
+            href="/help-support"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             Help/Support
           </Link>
-          <Link href="/kyc-verification" className="block hover:text-blue-400">
+          <Link
+            href="/kyc-verification"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+          >
             KYC Verification
           </Link>
         </nav>
       </aside>
 
-      {/* Overlay for mobile */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 lg:hidden"
@@ -84,6 +108,7 @@ export default function DashboardLayout({
           }`}
         >
           <div className="flex items-center space-x-4">
+            {/* Sidebar toggle (mobile) */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden"
@@ -91,6 +116,7 @@ export default function DashboardLayout({
               {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
+            {/* Logo */}
             <Image
               src="/images/logo3.png"
               alt="Company Logo"
@@ -99,6 +125,7 @@ export default function DashboardLayout({
               priority
             />
 
+            {/* Quick links */}
             <div className="flex space-x-3 ml-6">
               <Link
                 href="/"
@@ -107,13 +134,13 @@ export default function DashboardLayout({
                 HOME
               </Link>
               <Link
-                href="/dashboard/deposit"
+                href="/deposit"
                 className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-semibold"
               >
                 DEPOSIT
               </Link>
               <Link
-                href="/dashboard/withdraw"
+                href="/withdraw"
                 className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-semibold"
               >
                 WITHDRAW
@@ -121,7 +148,9 @@ export default function DashboardLayout({
             </div>
           </div>
 
+          {/* Right section */}
           <div className="flex items-center space-x-3">
+            {/* Theme switch */}
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -132,8 +161,10 @@ export default function DashboardLayout({
               <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
             </label>
 
+            {/* Translate */}
             <GoogleTranslate />
 
+            {/* KYC button */}
             <Link
               href="/kyc-verification"
               className={`px-3 py-1 rounded font-semibold text-sm ${
@@ -145,6 +176,7 @@ export default function DashboardLayout({
               KYC
             </Link>
 
+            {/* Logout */}
             <button
               onClick={onLogout}
               className={`px-3 py-1 rounded font-semibold text-sm ${
@@ -158,7 +190,7 @@ export default function DashboardLayout({
           </div>
         </div>
 
-        {/* Page Content */}
+        {/* Page content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 w-full max-w-full">
           {children}
         </main>

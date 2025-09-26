@@ -50,7 +50,7 @@ export default function Navbar() {
     if (token) setUser("loggedIn");
   }, []);
 
-  // Fake live updates for ticker
+  // Fake live updates
   useEffect(() => {
     const interval = setInterval(() => {
       setPairs((prev) =>
@@ -68,18 +68,19 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a] text-white shadow-md">
-      {/* ✅ Translator Row (far left, independent of logo/nav) */}
-      <div className="w-full flex justify-start px-6 py-2 bg-[#0d1b2a] border-b border-gray-700">
+      {/* Translator Bar */}
+      <div className="w-full flex justify-start px-6 py-2 bg-[#0d1b2a] border-b border-gray-700 text-lg font-bold">
         <GoogleTranslate />
       </div>
 
-      <div className="flex items-center justify-between px-6 py-4">
+      {/* Main Navbar Row */}
+      <div className="flex items-center justify-between px-6 py-5">
         {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-3 hover:scale-110 transition-transform duration-500 ease-out"
         >
-          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 p-1">
+          <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 p-1">
             <img
               src="/images/logo3.png"
               alt="VentureWise Logo"
@@ -87,7 +88,7 @@ export default function Navbar() {
             />
           </div>
           <span
-            className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-gradient"
+            className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-gradient"
             style={{ fontFamily: "'Pacifico', cursive" }}
           >
             VentureWise
@@ -112,29 +113,21 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6">
-          <nav className="flex gap-8 text-sm font-medium">
-            <Link href="/" className="hover:text-red-500 transition">
-              Home
-            </Link>
-            <Link href="/about" className="hover:text-red-500 transition">
-              About
-            </Link>
-            <Link href="/faq" className="hover:text-red-500 transition">
-              FAQ
-            </Link>
-            <Link href="/contact" className="hover:text-red-500 transition">
-              Contact
-            </Link>
+        <div className="hidden md:flex items-center gap-8">
+          <nav className="flex gap-12 text-xl font-extrabold tracking-wide">
+            <Link href="/" className="hover:text-yellow-400 transition">Home</Link>
+            <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
+            <Link href="/faq" className="hover:text-yellow-400 transition">FAQ</Link>
+            <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
           </nav>
 
           {/* Auth Buttons */}
-          <div className="flex gap-4 ml-4">
+          <div className="flex gap-6 ml-8">
             {user ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition"
+                  className="px-6 py-3 rounded-md bg-red-600 hover:bg-red-700 transition text-xl font-extrabold"
                 >
                   Dashboard
                 </Link>
@@ -143,7 +136,7 @@ export default function Navbar() {
                     localStorage.removeItem("jwtToken");
                     setUser(null);
                   }}
-                  className="px-4 py-2 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition"
+                  className="px-6 py-3 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition text-xl font-extrabold"
                 >
                   Logout
                 </button>
@@ -152,13 +145,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition"
+                  className="px-6 py-3 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition text-xl font-extrabold"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition"
+                  className="px-6 py-3 rounded-md bg-red-600 hover:bg-red-700 transition text-xl font-extrabold"
                 >
                   Register
                 </Link>
@@ -171,7 +164,7 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <button onClick={() => setIsOpen(!isOpen)} className="p-2">
             <svg
-              className="w-6 h-6"
+              className="w-8 h-8"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -193,22 +186,14 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <nav className="md:hidden flex flex-col gap-2 bg-[#0d1b2a] px-6 pb-4">
-          <Link href="/" className="hover:text-red-500 transition">
-            Home
-          </Link>
-          <Link href="/about" className="hover:text-red-500 transition">
-            About
-          </Link>
-          <Link href="/faq" className="hover:text-red-500 transition">
-            FAQ
-          </Link>
-          <Link href="/contact" className="hover:text-red-500 transition">
-            Contact
-          </Link>
+        <nav className="md:hidden flex flex-col gap-6 bg-[#0d1b2a] px-6 pb-6 text-2xl font-extrabold tracking-wide">
+          <Link href="/" className="hover:text-yellow-400 transition">Home</Link>
+          <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
+          <Link href="/faq" className="hover:text-yellow-400 transition">FAQ</Link>
+          <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
 
-          {/* Google Translate in mobile menu */}
-          <div className="my-2 flex justify-center">
+          {/* Translate */}
+          <div className="my-4 flex justify-center">
             <GoogleTranslate />
           </div>
 
@@ -216,7 +201,7 @@ export default function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition"
+                className="px-6 py-3 rounded-md bg-red-600 hover:bg-red-700 transition text-2xl font-extrabold"
               >
                 Dashboard
               </Link>
@@ -225,7 +210,7 @@ export default function Navbar() {
                   localStorage.removeItem("jwtToken");
                   setUser(null);
                 }}
-                className="px-4 py-2 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition"
+                className="px-6 py-3 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition text-2xl font-extrabold"
               >
                 Logout
               </button>
@@ -234,13 +219,13 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="px-4 py-2 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition"
+                className="px-6 py-3 rounded-md bg-transparent border border-red-600 hover:bg-red-600 hover:text-white transition text-2xl font-extrabold"
               >
                 Login
               </Link>
               <Link
                 href="/register"
-                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 transition"
+                className="px-6 py-3 rounded-md bg-red-600 hover:bg-red-700 transition text-2xl font-extrabold"
               >
                 Register
               </Link>
@@ -249,23 +234,19 @@ export default function Navbar() {
         </nav>
       )}
 
-      {/* Live Ticker Bar */}
+      {/* Live Ticker */}
       <div className="bg-gradient-to-r from-gray-900 to-black overflow-hidden border-t border-b border-gray-700">
         <div className="flex whitespace-nowrap">
-          <div className="animate-marquee flex gap-12 px-6 py-2">
+          <div className="animate-marquee flex gap-16 px-6 py-3 text-lg">
             {pairs.map((p, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 text-sm font-medium min-w-[140px]"
+                className="flex items-center gap-3 font-bold min-w-[160px]"
               >
                 <span className="text-gray-300">{p.symbol}</span>
-                <span className="text-white">
-                  {(p.price - 0.001).toFixed(4)}
-                </span>{" "}
+                <span className="text-white">{(p.price - 0.001).toFixed(4)}</span>{" "}
                 /{" "}
-                <span className="text-white">
-                  {(p.price + 0.001).toFixed(4)}
-                </span>
+                <span className="text-white">{(p.price + 0.001).toFixed(4)}</span>
                 <span
                   className={`ml-2 font-bold ${
                     p.change >= 0 ? "text-green-400" : "text-red-400"
@@ -277,20 +258,16 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="animate-marquee flex gap-12 px-6 py-2">
+          <div className="animate-marquee flex gap-16 px-6 py-3 text-lg">
             {pairs.map((p, idx) => (
               <div
                 key={idx + "-dup"}
-                className="flex items-center gap-2 text-sm font-medium min-w-[140px]"
+                className="flex items-center gap-3 font-bold min-w-[160px]"
               >
                 <span className="text-gray-300">{p.symbol}</span>
-                <span className="text-white">
-                  {(p.price - 0.001).toFixed(4)}
-                </span>{" "}
+                <span className="text-white">{(p.price - 0.001).toFixed(4)}</span>{" "}
                 /{" "}
-                <span className="text-white">
-                  {(p.price + 0.001).toFixed(4)}
-                </span>
+                <span className="text-white">{(p.price + 0.001).toFixed(4)}</span>
                 <span
                   className={`ml-2 font-bold ${
                     p.change >= 0 ? "text-green-400" : "text-red-400"
@@ -321,3 +298,4 @@ export default function Navbar() {
     </header>
   );
 }
+

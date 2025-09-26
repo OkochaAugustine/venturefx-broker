@@ -63,8 +63,8 @@ export async function POST(req: Request) {
 
     res.cookies.set("admin-token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,          // Always enforce HTTPS cookies
+      sameSite: "strict",    // Better CSRF protection
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
