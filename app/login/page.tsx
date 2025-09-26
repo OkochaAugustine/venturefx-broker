@@ -20,6 +20,26 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
+        // ✅ Save full user object
+        localStorage.setItem("user", JSON.stringify(data));
+
+        // ✅ Save userId for later API calls
+        if (data._id) {
+          localStorage.setItem("userId", data._id);
+        }
+
+        // ✅ Save traderName (fullname preferred, fallback to username, else email)
+        if (data.fullname || data.username || data.email) {
+          localStorage.setItem(
+            "traderName",
+            data.fullname || data.username || data.email
+          );
+        }
+
+        // ✅ Also save email separately
+        localStorage.setItem("userEmail", data.email || form.email);
+
+        // ✅ Redirect after success
         setLoading(true);
         setTimeout(() => {
           window.location.href = "/dashboard";
@@ -116,5 +136,6 @@ export default function Login() {
     </div>
   );
 }
+
 
 

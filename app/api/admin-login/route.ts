@@ -1,56 +1,80 @@
-// app/api/admin-login/route.ts
-import { NextResponse } from "next/server"
-import clientPromise from "../../../lib/mongodb"
-import bcrypt from "bcryptjs"
-import { SignJWT } from "jose"
+import { NextResponse } from "next/server";
+import clientPromise from "../../../lib/mongodb";
+import bcrypt from "bcryptjs";
+import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
   try {
-    // DEBUG: log the raw request body
-    const bodyText = await req.text()
-    console.log("Raw request body:", bodyText)
-
-    let data
-    try {
-      data = JSON.parse(bodyText)
-    } catch (parseErr) {
-      console.error("Failed to parse JSON:", parseErr)
-      return NextResponse.json({ message: "Invalid JSON body" }, { status: 400 })
-    }
-
-    const { email, password } = data
+    const { email, password } = await req.json();
 
     if (!email || !password) {
-      return NextResponse.json({ message: "Email and password are required." }, { status: 400 })
+      return NextResponse.json(
+        { message: "Email and password are required." },
+        { status: 400 }
+      );
     }
 
-    const client = await clientPromise
-    const db = client.db("venturefx")
-    const adminsCollection = db.collection("admins")
+    const client = await clientPromise;
+    const db = client.db("venturefx");
+    const adminsCollection = db.collection("admins");
 
-    const admin = await adminsCollection.findOne({ email: email.trim().toLowerCase() })
+    const admin = await adminsCollection.findOne({
+      email: email.trim().toLowerCase(),
+    });
+
     if (!admin) {
-      return NextResponse.json({ message: "Admin not found." }, { status: 404 })
+      return NextResponse.json({ message: "Admin not found." }, { status: 404 });
     }
 
-    const isMatch = await bcrypt.compare(password, admin.password)
+    const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return NextResponse.json({ message: "Invalid credentials." }, { status: 401 })
+      return NextResponse.json(
+        { message: "Invalid credentials." },
+        { status: 401 }
+      );
     }
 
-    const token = await new SignJWT({ adminId: admin._id.toString() })
+    // ✅ Ensure JWT_SECRET exists
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error("❌ JWT_SECRET is not set in environment variables.");
+      return NextResponse.json(
+        { message: "Server configuration error." },
+        { status: 500 }
+      );
+    }
+
+    // ✅ Generate JWT
+    const token = await new SignJWT({
+      adminId: admin._id.toString(),
+      role: "admin",
+    })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setExpirationTime("7d")
-      .sign(new TextEncoder().encode(process.env.JWT_SECRET || "secret"))
+      .sign(new TextEncoder().encode(secret));
 
-    return NextResponse.json({
+    // ✅ Build response & set cookie
+    const res = NextResponse.json({
+      success: true,
       message: "Login successful",
-      adminId: admin._id,
-      fullname: admin.fullname,
-      token,
-    })
+      adminId: admin._id.toString(),
+      fullname: admin.fullname || "",
+    });
+
+    res.cookies.set("admin-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return res;
   } catch (err) {
-    console.error("Admin login error:", err)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    console.error("❌ Admin login error:", err);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

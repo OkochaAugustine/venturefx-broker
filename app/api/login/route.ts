@@ -3,7 +3,6 @@ import { NextResponse } from "next/server"
 import clientPromise from "@/lib/mongodb"
 import bcrypt from "bcryptjs"
 import { SignJWT } from "jose"
-import { cookies } from "next/headers"
 
 export async function POST(req: Request) {
   try {
@@ -41,12 +40,19 @@ export async function POST(req: Request) {
       .setExpirationTime("7d")
       .sign(secret)
 
-    // ✅ Store JWT in HttpOnly cookie
+    // ✅ Remove password before sending user back
+    const { password: _, ...safeUser } = user
+
+    // ✅ Build response with user data
     const response = NextResponse.json(
-      { message: "Login successful!" },
+      {
+        message: "Login successful!",
+        user: safeUser, // frontend can now store this
+      },
       { status: 200 }
     )
 
+    // ✅ Store JWT in HttpOnly cookie
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -58,7 +64,10 @@ export async function POST(req: Request) {
     return response
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 

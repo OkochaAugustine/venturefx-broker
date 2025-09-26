@@ -1,10 +1,11 @@
+// app/(dashboard)/transactions/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const activities = [
-  // 🇩🇪 German (70%)
   { id: 1, user: "Anna", type: "deposit", amount: "3,200$", wallet: "ID(6739204...)", status: "Deposit Successful" },
   { id: 2, user: "Lukas", type: "withdrawal", amount: "1,500$", wallet: "ID(2239012...)", status: "Withdrawal Successful" },
   { id: 3, user: "Mia", type: "deposit", amount: "5,800$", wallet: "ID(9982102...)", status: "Deposit Successful" },
@@ -25,8 +26,6 @@ const activities = [
   { id: 18, user: "Katharina", type: "deposit", amount: "4,300$", wallet: "ID(2203902...)", status: "Deposit Successful" },
   { id: 19, user: "Sebastian", type: "withdrawal", amount: "3,100$", wallet: "ID(4482210...)", status: "Withdrawal Successful" },
   { id: 20, user: "Lea", type: "deposit", amount: "2,700$", wallet: "ID(5529083...)", status: "Deposit Successful" },
-
-  // 🇺🇸 American (30%)
   { id: 21, user: "John", type: "deposit", amount: "4,000$", wallet: "ID(9845123...)", status: "Deposit Successful" },
   { id: 22, user: "Emily", type: "withdrawal", amount: "1,200$", wallet: "ID(1273992...)", status: "Withdrawal Successful" },
   { id: 23, user: "Michael", type: "deposit", amount: "2,500$", wallet: "ID(5739201...)", status: "Deposit Successful" },
@@ -50,54 +49,69 @@ export default function TransactionPage() {
   }, []);
 
   return (
-    <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      {/* Title */}
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-4xl font-extrabold mb-8 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
-      >
-        Transactions
-      </motion.h1>
+    <DashboardLayout>
+      <div className="p-6 flex flex-col items-center justify-start min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+        {/* Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl font-extrabold mb-6 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+        >
+          Transactions
+        </motion.h1>
 
-      {/* No transactions message */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.8 }}
-        className="text-lg text-gray-300 mb-12"
-      >
-        No transactions yet.
-      </motion.p>
+        {/* Scrolling Ticker */}
+        <div className="relative h-20 w-full max-w-3xl overflow-hidden mb-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activities[current].id}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -40 }}
+              transition={{ duration: 0.6 }}
+              className="absolute inset-0 flex items-center justify-center text-lg font-medium"
+            >
+              <span className="px-4 py-2 rounded-xl bg-white/10 shadow-lg backdrop-blur-lg">
+                <span className="font-bold text-green-400">{activities[current].user}</span>{" "}
+                ({activities[current].wallet}) →{" "}
+                <span
+                  className={`${
+                    activities[current].type === "deposit" ? "text-green-400" : "text-red-400"
+                  } font-semibold`}
+                >
+                  {activities[current].status} {activities[current].amount}
+                </span>
+              </span>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-      {/* Recent Activity Ticker */}
-      <div className="relative h-20 w-full max-w-3xl overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activities[current].id}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.6 }}
-            className="absolute inset-0 flex items-center justify-center text-lg font-medium"
-          >
-            <span className="px-4 py-2 rounded-xl bg-white/10 shadow-lg backdrop-blur-lg">
-              <span className="font-bold text-green-400">{activities[current].user}</span>{" "}
-              ({activities[current].wallet}) →{" "}
+        {/* Recent Transactions Feed */}
+        <div className="w-full max-w-3xl space-y-3 overflow-y-auto flex-1 pb-6">
+          {activities.slice(0, 12).map((item) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="flex justify-between items-center px-4 py-3 rounded-lg bg-white/10 backdrop-blur-lg shadow-md"
+            >
+              <span className="font-semibold text-green-300">{item.user}</span>
+              <span className="text-gray-300 text-sm">{item.wallet}</span>
               <span
                 className={`${
-                  activities[current].type === "deposit" ? "text-green-400" : "text-red-400"
-                } font-semibold`}
+                  item.type === "deposit" ? "text-green-400" : "text-red-400"
+                } font-bold`}
               >
-                {activities[current].status} {activities[current].amount}
+                {item.amount}
               </span>
-            </span>
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
-
 

@@ -1,7 +1,8 @@
 "use client";
-
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import TradeNav from "@/components/TradeNav"; // ✅ Reuse the same nav
+import GoogleTranslate from "@/components/GoogleTranslate";
 
 interface Trade {
   id: number;

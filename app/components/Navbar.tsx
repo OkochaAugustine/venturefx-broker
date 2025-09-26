@@ -67,9 +67,9 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0d1b2a] text-white shadow-md">
-      {/* Translator Row (centered) */}
-      <div className="w-full flex justify-center py-2 bg-[#0d1b2a] border-b border-gray-700">
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a] text-white shadow-md">
+      {/* ✅ Translator Row (far left, independent of logo/nav) */}
+      <div className="w-full flex justify-start px-6 py-2 bg-[#0d1b2a] border-b border-gray-700">
         <GoogleTranslate />
       </div>
 
@@ -262,7 +262,10 @@ export default function Navbar() {
                 <span className="text-white">
                   {(p.price - 0.001).toFixed(4)}
                 </span>{" "}
-                / <span className="text-white">{(p.price + 0.001).toFixed(4)}</span>
+                /{" "}
+                <span className="text-white">
+                  {(p.price + 0.001).toFixed(4)}
+                </span>
                 <span
                   className={`ml-2 font-bold ${
                     p.change >= 0 ? "text-green-400" : "text-red-400"
@@ -284,7 +287,10 @@ export default function Navbar() {
                 <span className="text-white">
                   {(p.price - 0.001).toFixed(4)}
                 </span>{" "}
-                / <span className="text-white">{(p.price + 0.001).toFixed(4)}</span>
+                /{" "}
+                <span className="text-white">
+                  {(p.price + 0.001).toFixed(4)}
+                </span>
                 <span
                   className={`ml-2 font-bold ${
                     p.change >= 0 ? "text-green-400" : "text-red-400"
@@ -315,5 +321,3 @@ export default function Navbar() {
     </header>
   );
 }
-
-

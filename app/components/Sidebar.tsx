@@ -1,10 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 
+interface User {
+  _id: string;
+  fullname?: string;
+  username?: string;
+  email?: string;
+}
+
 export default function Sidebar() {
   const { t } = useTranslation();
+  const [traderName, setTraderName] = useState<string>("Guest");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+
+        // ✅ IMPORTANT: actual user is inside parsed.user
+        const u: User = parsed.user || parsed;
+
+        if (u) {
+          setTraderName(u.fullname || u.username || u.email || "Guest");
+        }
+      } catch (err) {
+        console.error("❌ Failed to parse user from localStorage:", err);
+      }
+    }
+  }, []);
 
   const sidebarLinks = [
     { name: t("dashboard.sidebar.dashboard"), href: "/dashboard" },
@@ -18,7 +46,12 @@ export default function Sidebar() {
   ];
 
   return (
-    <nav className="flex flex-col gap-2 bg-gray-50 p-4 rounded">
+    <nav className="flex flex-col gap-4 bg-gray-50 p-4 rounded">
+      {/* ✅ User’s Name Section */}
+      <div className="text-xl font-bold text-red-600 mb-4">
+        {traderName}
+      </div>
+
       {sidebarLinks.map((link) => (
         <Link
           key={link.href}
@@ -31,3 +64,5 @@ export default function Sidebar() {
     </nav>
   );
 }
+
+

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ScaleWrapper from "./scale-wrapper"; // 👈 client component
-import { Providers } from "./providers/ThemeProvider"; // 👈 added
+import ScaleWrapper from "./scale-wrapper"; // 👈 still handling scaling
+import { Providers } from "./providers/ThemeProvider"; // 👈 keep
+import ChatBot from "@/components/ChatBot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,23 +25,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="h-full">
       <head>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
+          // 👇 important to keep proper scaling on mobile
+          content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white min-h-screen w-full overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-full bg-white overflow-x-hidden overflow-y-auto`}
       >
         <Providers>
-          <ScaleWrapper>{children}</ScaleWrapper>
+          <ScaleWrapper>
+            {children}
+            <ChatBot /> {/* 👈 Render chatbot here */}
+          </ScaleWrapper>
         </Providers>
       </body>
     </html>
   );
 }
+
+
 
 
 

@@ -5,14 +5,13 @@ import { NextResponse } from "next/server";
 // ---------------- GET ----------------
 export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> } // 👈 params is a Promise
+  context: { params: Promise<{ id: string }> } // 👈 must be Promise
 ) {
   try {
     const { id } = await context.params; // 👈 await it
     console.log("🔍 GET fetching user with ID:", id);
 
     if (!id || !ObjectId.isValid(id)) {
-      console.error("❌ GET: Invalid or missing ID");
       return NextResponse.json(
         { success: false, message: "Invalid or missing ID" },
         { status: 400 }
@@ -47,14 +46,13 @@ export async function GET(
 // ---------------- PUT ----------------
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> } // 👈 must be Promise
 ) {
   try {
-    const { id } = await context.params; // 👈 await it
+    const { id } = await context.params; // 👈 await
     const body = await req.json();
 
     if (!id || !ObjectId.isValid(id)) {
-      console.error("❌ PUT: Invalid or missing ID");
       return NextResponse.json(
         { success: false, message: "Invalid or missing ID" },
         { status: 400 }
@@ -64,7 +62,7 @@ export async function PUT(
     const client = await clientPromise;
     const db = client.db("venturefx");
 
-    const updateData: any = {};
+    const updateData: Record<string, any> = {};
     if (body.balance !== undefined) updateData.balance = body.balance;
     if (body.activeDeposit !== undefined) updateData.activeDeposit = body.activeDeposit;
     if (body.earnedProfit !== undefined) updateData.earnedProfit = body.earnedProfit;
@@ -74,9 +72,19 @@ export async function PUT(
       { $set: updateData }
     );
 
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
     console.log("✅ PUT updated user:", id, result);
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json(
+      { success: true, updated: result.modifiedCount > 0 },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("❌ PUT /api/users/[id] error:", err);
     return NextResponse.json(
@@ -85,4 +93,3 @@ export async function PUT(
     );
   }
 }
-

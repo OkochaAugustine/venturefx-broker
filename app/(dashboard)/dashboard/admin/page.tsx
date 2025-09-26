@@ -19,34 +19,35 @@ export default function AdminPage() {
   const [profits, setProfits] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const res = await fetch("/api/users", { cache: "no-store" });
-        if (!res.ok) throw new Error(`Error fetching users: ${res.status}`);
-        const data = await res.json();
-        setUsers(data);
+  async function fetchUsers() {
+    try {
+      const res = await fetch("/api/users", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Error fetching users: ${res.status}`);
+      const data = await res.json();
+      setUsers(data);
 
-        // Initialize states
-        const initialBalances: { [key: string]: number } = {};
-        const initialDeposits: { [key: string]: number } = {};
-        const initialProfits: { [key: string]: number } = {};
+      // Initialize states
+      const initialBalances: { [key: string]: number } = {};
+      const initialDeposits: { [key: string]: number } = {};
+      const initialProfits: { [key: string]: number } = {};
 
-        data.forEach((u: User) => {
-          initialBalances[u._id] = u.balance || 0;
-          initialDeposits[u._id] = u.activeDeposit || 0;
-          initialProfits[u._id] = u.earnedProfit || 0;
-        });
+      data.forEach((u: User) => {
+        initialBalances[u._id] = u.balance || 0;
+        initialDeposits[u._id] = u.activeDeposit || 0;
+        initialProfits[u._id] = u.earnedProfit || 0;
+      });
 
-        setBalances(initialBalances);
-        setDeposits(initialDeposits);
-        setProfits(initialProfits);
-      } catch (err) {
-        console.error("Failed to fetch users:", err);
-      } finally {
-        setLoading(false);
-      }
+      setBalances(initialBalances);
+      setDeposits(initialDeposits);
+      setProfits(initialProfits);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -85,11 +86,8 @@ export default function AdminPage() {
 
       const data = await res.json();
       if (data.success) {
-        setUsers((prev) =>
-          prev.map((u) =>
-            u._id === id ? { ...u, ...body } : u
-          )
-        );
+        // ✅ Refresh all users after update
+        await fetchUsers();
         alert(`${field} updated successfully!`);
       } else {
         alert(`Failed to update ${field}`);

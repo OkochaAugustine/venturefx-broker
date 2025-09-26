@@ -8,25 +8,85 @@ import GoogleTranslate from "@/components/GoogleTranslate";
 import { useTheme } from "next-themes";
 
 interface UserData {
+  _id: string;
   balance: number;
   earnedProfit: number;
   activeDeposit: number;
   status: string;
+  fullname?: string;
+  username?: string;
+  email?: string;
 }
 
 const DashboardPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [traderName, setTraderName] = useState("Guest");
 
-  // ✅ dark mode from next-themes
   const { theme, setTheme } = useTheme();
   const darkMode = theme === "dark";
 
-  // Refs
+  // Refs for TradingView widgets
   const chartRef = useRef<HTMLDivElement>(null);
   const newsRef = useRef<HTMLDivElement>(null);
   const extraChartRef = useRef<HTMLDivElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Fetch latest user from backend
+  const fetchUserData = async (id: string) => {
+    try {
+      console.log("🔍 GET fetching user with ID:", id);
+      const res = await fetch(`/api/users/${id}`);
+      if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
+      const updated = await res.json();
+
+      setUser(updated);
+      setTraderName(
+        updated.fullname || updated.username || updated.email || "Guest"
+      );
+
+      // update localStorage so it's always fresh
+      localStorage.setItem("user", JSON.stringify(updated));
+    } catch (err) {
+      console.error("❌ Error fetching user:", err);
+    }
+  };
+
+  // ✅ Load user from localStorage & set interval refresh
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        const u = parsed.user || parsed;
+
+        if (u && u._id) {
+          setTraderName(u.fullname || u.username || u.email || "Guest");
+          setUser({
+            _id: u._id,
+            balance: Number(u.balance) || 0,
+            earnedProfit: Number(u.earnedProfit) || 0,
+            activeDeposit: Number(u.activeDeposit) || 0,
+            status: u.status || "Active",
+            fullname: u.fullname,
+            username: u.username,
+            email: u.email,
+          });
+
+          // fetch latest immediately
+          fetchUserData(u._id);
+
+          // 🔄 refresh every 5 seconds
+          const interval = setInterval(() => fetchUserData(u._id), 5000);
+          return () => clearInterval(interval);
+        } else {
+          console.error("❌ No valid user ID found in localStorage");
+        }
+      } catch (err) {
+        console.error("❌ Failed to parse user from localStorage:", err);
+      }
+    }
+  }, []);
 
   // Logout handler
   const handleLogout = () => {
@@ -39,35 +99,7 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // ✅ Fetch user data (balance, profit, deposit)
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-
-        const res = await fetch(`/api/users/${userId}`);
-        const data = await res.json();
-
-        if (res.ok) {
-          setUser({
-            balance: data.balance || 0,
-            earnedProfit: data.earnedProfit || 0, // ✅ match API field
-            activeDeposit: data.activeDeposit || 0,
-            status: data.status || "Active",
-          });
-        } else {
-          console.error("❌ Failed to fetch user:", data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  // Load TradingView scripts with theme support
+  // --- TradingView widgets setup ---
   useEffect(() => {
     if (!chartRef.current) return;
     chartRef.current.innerHTML = "";
@@ -193,29 +225,35 @@ const DashboardPage: React.FC = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-4 font-bold text-xl border-b border-gray-700">
-          VentureFX
+        <div className="p-4 font-extrabold text-xl border-b border-gray-700">
+          {traderName}
         </div>
-        <nav className="p-4 space-y-4">
-          <Link href="/dashboard" className="block hover:text-blue-400">
+        <nav className="p-4 space-y-6 font-extrabold text-lg tracking-wide">
+          <Link href="/dashboard" className="block py-2 hover:text-blue-400">
             Dashboard
           </Link>
-          <Link href="/trades" className="block hover:text-blue-400">
+          <Link href="/trades" className="block py-2 hover:text-blue-400">
             Trades
           </Link>
-          <Link href="/bot-trades" className="block hover:text-blue-400">
+          <Link href="/bot-trades" className="block py-2 hover:text-blue-400">
             BOT Trades History
           </Link>
-          <Link href="/transactions" className="block hover:text-blue-400">
+          <Link
+            href="/transactions"
+            className="block py-2 hover:text-blue-400"
+          >
             Transactions History
           </Link>
-          <Link href="/upgrades" className="block hover:text-blue-400">
+          <Link href="/upgrades" className="block py-2 hover:text-blue-400">
             Upgrade
           </Link>
-          <Link href="/news" className="block hover:text-blue-400">
+          <Link href="/news" className="block py-2 hover:text-blue-400">
             News
           </Link>
-          <Link href="/help-support" className="block hover:text-blue-400">
+          <Link
+            href="/help-support"
+            className="block py-2 hover:text-blue-400"
+          >
             Help/Support
           </Link>
         </nav>
@@ -237,7 +275,6 @@ const DashboardPage: React.FC = () => {
             darkMode ? "bg-gray-800 text-white" : "bg-blue-600 text-white"
           }`}
         >
-          {/* Left: Logo + toggle + nav buttons */}
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -254,7 +291,6 @@ const DashboardPage: React.FC = () => {
               priority
             />
 
-            {/* Nav Buttons */}
             <div className="flex space-x-3 ml-6">
               <Link
                 href="/"
@@ -277,9 +313,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: language + switch + kyc + logout */}
           <div className="flex items-center space-x-3">
-            {/* Dark/light toggle */}
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -290,7 +324,6 @@ const DashboardPage: React.FC = () => {
               <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
             </label>
 
-            {/* Google Translate */}
             <div className="flex items-center">
               <GoogleTranslate />
             </div>
@@ -306,7 +339,6 @@ const DashboardPage: React.FC = () => {
               KYC
             </Link>
 
-            {/* 🚀 Logout button */}
             <button
               onClick={handleLogout}
               className={`px-3 py-1 rounded font-semibold text-sm ${
@@ -327,43 +359,57 @@ const DashboardPage: React.FC = () => {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 w-full max-w-full">
           {/* Stats Cards */}
           <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full">
-            <div className="bg-purple-600 text-white shadow rounded-xl p-4 text-center w-full">
-              <h3 className="text-sm">Account Balance</h3>
-              <p className="text-2xl font-bold">
-                ${user ? user.balance.toFixed(2) : "0.00"}
-              </p>
-              <p className="text-xs mt-2">
-                Account Status: {user ? user.status : "Loading..."}
-              </p>
-            </div>
-            <div className="bg-green-600 text-white shadow rounded-xl p-4 text-center w-full">
-              <h3 className="text-sm">Earned Profit</h3>
-              <p className="text-2xl font-bold">
-                ${user ? user.earnedProfit.toFixed(2) : "0.00"}
-              </p>
-              <p className="text-xs mt-2">
-                Account Status: {user ? user.status : "Loading..."}
-              </p>
-            </div>
-            <div className="bg-orange-500 text-white shadow rounded-xl p-4 text-center w-full">
-              <h3 className="text-sm">Active Deposit</h3>
-              <p className="text-2xl font-bold">
-                ${user ? user.activeDeposit.toFixed(2) : "0.00"}
-              </p>
-              <p className="text-xs mt-2">
-                Account Status: {user ? user.status : "Loading..."}
-              </p>
-            </div>
-            <div className="bg-red-500 text-white shadow rounded-xl p-4 text-center w-full">
-              <h3 className="text-sm">Buy Package</h3>
-              <p className="text-xs mt-1">Package Plan</p>
-              <Link
-                href="/upgrade"
-                className="mt-3 inline-block px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100"
+            {[
+              {
+                value:
+                  user?.balance !== undefined
+                    ? `$${user.balance.toFixed(2)}`
+                    : "$0.00",
+                label: "Account Balance",
+                extra: `Account Status: ${user?.status || "Active"}`,
+                color: "bg-purple-600",
+              },
+              {
+                value:
+                  user?.earnedProfit !== undefined
+                    ? `$${user.earnedProfit.toFixed(2)}`
+                    : "$0.00",
+                label: "Earned Profit",
+                extra: `Account Status: ${user?.status || "Active"}`,
+                color: "bg-green-600",
+              },
+              {
+                value:
+                  user?.activeDeposit !== undefined
+                    ? `$${user.activeDeposit.toFixed(2)}`
+                    : "$0.00",
+                label: "Active Deposit",
+                extra: `Account Status: ${user?.status || "Active"}`,
+                color: "bg-orange-500",
+              },
+              {
+                value: "Package Plan",
+                label: "Buy Package",
+                extra: (
+                  <Link
+                    href="/upgrades"
+                    className="mt-3 inline-block px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100"
+                  >
+                    Upgrade Account
+                  </Link>
+                ),
+                color: "bg-red-500",
+              },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className={`${card.color} text-white shadow rounded-xl p-4 text-center w-full`}
               >
-                Upgrade Account
-              </Link>
-            </div>
+                <h3 className="text-sm">{card.label}</h3>
+                <p className="text-2xl font-bold">{card.value}</p>
+                <p className="text-xs mt-2">{card.extra}</p>
+              </div>
+            ))}
           </div>
 
           {/* Live Chart */}
@@ -411,5 +457,4 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
-
 
