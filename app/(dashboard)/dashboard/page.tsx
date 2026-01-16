@@ -218,7 +218,7 @@ const DashboardPage: React.FC = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-6 text-2xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
+        <div className="p-6 text-3xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
           {traderName}
         </div>
 
@@ -235,8 +235,8 @@ const DashboardPage: React.FC = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90
-              text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl
+              className="px-4 py-3 rounded-lg bg-white/70 hover:bg-white/90
+              text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl
               transition-all duration-300 ease-out"
             >
               {link.name}
@@ -280,19 +280,19 @@ const DashboardPage: React.FC = () => {
             <div className="flex space-x-3 ml-6">
               <Link
                 href="/"
-                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-semibold"
+                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-bold text-lg"
               >
                 HOME
               </Link>
               <Link
                 href="/dashboard/deposit"
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-semibold"
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-bold text-lg"
               >
                 DEPOSIT
               </Link>
               <Link
                 href="/dashboard/withdraw"
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-semibold"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-bold text-lg"
               >
                 WITHDRAW
               </Link>

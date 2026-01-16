@@ -59,9 +59,9 @@ export default function Sidebar() {
           <Link
             key={link.href}
             href={link.href}
-            className="px-4 py-2 rounded-lg 
+            className="px-4 py-3 rounded-lg 
               bg-white/70 hover:bg-white/90
-              text-lg font-bold text-gray-900 hover:text-red-600
+              text-xl font-extrabold text-gray-900 hover:text-red-600
               shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             {link.name}
@@ -71,3 +71,4 @@ export default function Sidebar() {
     </aside>
   );
 }
+

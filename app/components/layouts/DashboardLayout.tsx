@@ -35,56 +35,56 @@ export default function DashboardLayout({
         lg:relative lg:translate-x-0 
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="p-6 text-2xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
+        <div className="p-6 text-3xl font-extrabold text-gray-900 drop-shadow-md border-b border-white/20 text-center">
           {traderName}
         </div>
 
         <nav className="flex flex-col gap-4 p-4">
           <Link
             href="/dashboard"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             Dashboard
           </Link>
           <Link
             href="/trades"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             Trades
           </Link>
           <Link
             href="/bot-trades"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             BOT Trades History
           </Link>
           <Link
             href="/transactions"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             Transactions History
           </Link>
           <Link
             href="/upgrades"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             Upgrade
           </Link>
           <Link
             href="/news"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             News
           </Link>
           <Link
             href="/help-support"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             Help/Support
           </Link>
           <Link
             href="/kyc-verification"
-            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-lg font-bold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
+            className="px-4 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-xl font-extrabold text-gray-900 hover:text-red-600 shadow-md hover:shadow-xl transition-all duration-300 ease-out"
           >
             KYC Verification
           </Link>
@@ -129,19 +129,19 @@ export default function DashboardLayout({
             <div className="flex space-x-3 ml-6">
               <Link
                 href="/"
-                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-semibold"
+                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-bold text-lg"
               >
                 HOME
               </Link>
               <Link
                 href="/deposit"
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-semibold"
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-bold text-lg"
               >
                 DEPOSIT
               </Link>
               <Link
                 href="/withdraw"
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-semibold"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-bold text-lg"
               >
                 WITHDRAW
               </Link>
@@ -207,3 +207,4 @@ export default function DashboardLayout({
     </div>
   );
 }
+

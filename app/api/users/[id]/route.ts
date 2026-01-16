@@ -1,14 +1,14 @@
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // ---------------- GET ----------------
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params; // ✅ no await
+    const { id } = await context.params; // ✅ await because it's a Promise
     console.log("🔍 GET fetching user with ID:", id);
 
     if (!id || !ObjectId.isValid(id)) {
@@ -45,11 +45,11 @@ export async function GET(
 
 // ---------------- PUT ----------------
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params; // ✅ no await
+    const { id } = await context.params; // ✅ must await
     const body = await req.json();
 
     if (!id || !ObjectId.isValid(id)) {
@@ -93,3 +93,4 @@ export async function PUT(
     );
   }
 }
+
