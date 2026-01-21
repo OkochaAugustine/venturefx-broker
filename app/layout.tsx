@@ -4,6 +4,7 @@ import "./globals.css";
 import ScaleWrapper from "./scale-wrapper";
 import { Providers } from "./providers/ThemeProvider";
 import ChatBot from "@/components/ChatBot";
+import { FiHome, FiTrendingUp, FiUser } from "react-icons/fi"; // example icons
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full text-[18px] md:text-[19px] lg:text-[20px]"
+      className="h-full text-base md:text-lg lg:text-xl"
     >
       <head>
         <meta
@@ -48,13 +49,31 @@ export default function RootLayout({
           overflow-x-hidden
           overflow-y-auto
           break-words
+          font-sans
         `}
       >
         <Providers>
           <ScaleWrapper>
-            <main className="min-h-screen w-full flex flex-col">
+            <header className="w-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4 md:gap-8 font-bold">
+              {/* Example Nav Icons */}
+              <div className="flex items-center gap-4">
+                <FiHome className="w-6 h-6 md:w-8 md:h-8" />
+                <span className="text-base md:text-lg lg:text-xl">Home</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <FiTrendingUp className="w-6 h-6 md:w-8 md:h-8" />
+                <span className="text-base md:text-lg lg:text-xl">Market</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <FiUser className="w-6 h-6 md:w-8 md:h-8" />
+                <span className="text-base md:text-lg lg:text-xl">Profile</span>
+              </div>
+            </header>
+
+            <main className="min-h-screen w-full flex flex-col gap-6 font-bold">
               {children}
             </main>
+
             <ChatBot />
           </ScaleWrapper>
         </Providers>
