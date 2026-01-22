@@ -54,21 +54,7 @@ export default function RootLayout({
       >
         <Providers>
           <ScaleWrapper>
-            <header className="w-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4 md:gap-8 font-bold">
-              {/* Example Nav Icons */}
-              <div className="flex items-center gap-4">
-                <FiHome className="w-6 h-6 md:w-8 md:h-8" />
-                <span className="text-base md:text-lg lg:text-xl">Home</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <FiTrendingUp className="w-6 h-6 md:w-8 md:h-8" />
-                <span className="text-base md:text-lg lg:text-xl">Market</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <FiUser className="w-6 h-6 md:w-8 md:h-8" />
-                <span className="text-base md:text-lg lg:text-xl">Profile</span>
-              </div>
-            </header>
+            
 
             <main className="min-h-screen w-full flex flex-col gap-6 font-bold">
               {children}
