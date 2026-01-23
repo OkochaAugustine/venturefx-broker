@@ -1,18 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
+
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}"
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
+
   theme: {
+    // UIkit-like breakpoints (kept exactly as you defined)
     screens: {
       sm: "640px",   // UIkit "s"
       md: "960px",   // UIkit "m"
       lg: "1200px",  // UIkit "l"
-      xl: "1600px"   // UIkit "xl"
+      xl: "1600px",  // UIkit "xl"
     },
+
     container: {
       center: true,
       padding: {
@@ -20,13 +24,17 @@ module.exports = {
         sm: "1.5rem",
         md: "2rem",
         lg: "3rem",
-        xl: "4rem"
+        xl: "4rem",
       },
     },
+
     extend: {
+      /* ---------------- MAX WIDTH ---------------- */
       maxWidth: {
-        container: "1440px", // similar to SturdyFX’s boxed layout
+        container: "1440px",
       },
+
+      /* ---------------- SPACING ---------------- */
       spacing: {
         px: "1px",
         0: "0px",
@@ -46,8 +54,10 @@ module.exports = {
         40: "10rem",
         48: "12rem",
         56: "14rem",
-        64: "16rem"
+        64: "16rem",
       },
+
+      /* ---------------- COLORS ---------------- */
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -67,6 +77,7 @@ module.exports = {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
+
         sidebar: "var(--sidebar)",
         "sidebar-foreground": "var(--sidebar-foreground)",
         "sidebar-primary": "var(--sidebar-primary)",
@@ -75,12 +86,15 @@ module.exports = {
         "sidebar-accent-foreground": "var(--sidebar-accent-foreground)",
         "sidebar-border": "var(--sidebar-border)",
         "sidebar-ring": "var(--sidebar-ring)",
+
         "chart-1": "var(--chart-1)",
         "chart-2": "var(--chart-2)",
         "chart-3": "var(--chart-3)",
         "chart-4": "var(--chart-4)",
-        "chart-5": "var(--chart-5)"
+        "chart-5": "var(--chart-5)",
       },
+
+      /* ---------------- RADIUS ---------------- */
       borderRadius: {
         sm: "var(--radius-sm, 0.125rem)",
         md: "var(--radius-md, 0.375rem)",
@@ -89,10 +103,34 @@ module.exports = {
         DEFAULT: "0.25rem",
         "2xl": "1rem",
         "3xl": "1.5rem",
-        full: "9999px"
-      }
-    }
-  },
-  plugins: []
-};
+        full: "9999px",
+      },
 
+      /* ---------------- MOBILE TYPOGRAPHY BOOST ---------------- */
+      fontSize: {
+        // Bigger default text = better mobile UX
+        base: ["1.125rem", { lineHeight: "1.75rem" }], // 18px
+      },
+
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "100%",
+            color: "var(--foreground)",
+            p: {
+              marginTop: "0.75em",
+              marginBottom: "0.75em",
+            },
+            h1: { marginBottom: "0.6em" },
+            h2: { marginBottom: "0.6em" },
+            h3: { marginBottom: "0.6em" },
+          },
+        },
+      },
+    },
+  },
+
+  plugins: [
+    require("@tailwindcss/typography"),
+  ],
+};
