@@ -20,7 +20,7 @@ export default function Hero() {
   }, [images.length]);
 
   return (
-    <section className="relative h-[90vh] w-full flex items-center justify-center text-white overflow-hidden">
+    <section className="relative h-[90vh] w-full flex items-end justify-center text-white overflow-hidden">
       {/* ✅ Background Slider */}
       {images.map((img, index) => (
         <div
@@ -37,38 +37,38 @@ export default function Hero() {
             priority={index === 0}
           />
           {/* Overlay for better text visibility */}
-          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
       ))}
 
-      {/* ✅ Text Section (Centered Left) */}
-      <div className="relative z-10 max-w-2xl px-6 md:px-12">
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight animate-fade-in">
+      {/* ✅ Text Section */}
+      <div className="relative z-10 max-w-3xl px-6 md:px-12 pb-16 md:pb-24 text-center md:text-left">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-snug">
           Register Now and Get <br />
-          a <span className="text-red-500">$500 Bonus</span> on <br />
+          <span className="text-red-500">$500 Bonus</span> on <br />
           $5000 Deposit.
         </h1>
-        <p className="mt-6 text-lg md:text-xl animate-slide-up">
+        <p className="mt-4 text-base sm:text-lg md:text-xl text-gray-100">
           Trade Cryptocurrencies, Stock Indices, Commodities and Forex from a single account
         </p>
 
         {/* ✅ Buttons */}
-        <div className="mt-8 flex gap-4 animate-bounce-in">
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
           <a
             href="/login"
-            className="bg-red-600 px-8 py-3 rounded-md font-semibold hover:bg-red-700 shadow-lg transition"
+            className="bg-red-600 px-6 py-3 rounded-md text-white hover:bg-red-700 shadow-lg transition"
           >
             Login Account
           </a>
           <a
             href="/register"
-            className="bg-transparent border border-red-600 px-8 py-3 rounded-md font-semibold hover:bg-red-600 hover:text-white shadow-lg transition"
+            className="bg-transparent border border-red-600 px-6 py-3 rounded-md text-red-600 hover:bg-red-600 hover:text-white shadow-lg transition"
           >
             Open Account
           </a>
         </div>
 
-        <p className="mt-6 text-xs opacity-80 animate-fade-in">
+        <p className="mt-4 text-xs text-gray-200 opacity-80">
           Trading in Forex/CFDs is highly speculative and carries a high level of risk.
         </p>
       </div>
@@ -87,6 +87,5 @@ export default function Hero() {
     </section>
   );
 }
-
 
 

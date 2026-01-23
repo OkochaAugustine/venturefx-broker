@@ -255,79 +255,92 @@ const DashboardPage: React.FC = () => {
 
       {/* Main content */}
       <div className="flex flex-col flex-1 w-full">
-        {/* Top Navbar */}
-        
 
-  {/* Top Navbar */}
+
+
+
 {/* Top Navbar */}
 <div
-  className={`flex flex-col sm:flex-row sm:items-center justify-between px-4 py-2 shadow ${
+  className={`flex items-center justify-between px-3 py-1 sm:px-4 sm:py-2 shadow ${
     darkMode ? "bg-gray-800 text-white" : "bg-blue-600 text-white"
-  } gap-2 sm:gap-0`}
+  }`}
 >
-  {/* Left section: logo + main links */}
-  <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
-    {/* Hamburger menu for mobile */}
+  {/* Left section: Hamburger + Logo + Mobile Logout */}
+  <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+    {/* Hamburger: visible only on mobile */}
     <button
       onClick={() => setSidebarOpen(!sidebarOpen)}
-      className="lg:hidden"
+      className="sm:hidden p-1"
     >
       {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
     </button>
 
-    {/* Logo */}
-    <Image
-      src="/images/logo3.png"
-      alt="Company Logo"
-      width={120}
-      height={40}
-      priority
-    />
+    {/* Mobile Logout button: only on small screens */}
+    <button
+      onClick={handleLogout}
+      className="sm:hidden px-3 py-1 bg-red-600 rounded font-normal text-sm"
+    >
+      Logout
+    </button>
 
-    {/* Main links */}
-    <div className="flex flex-wrap gap-2 sm:gap-3 mt-2 sm:mt-0">
+    {/* Logo */}
+    <div className="flex-shrink-0">
+      <Image
+        src="/images/logo3.png"
+        alt="Company Logo"
+        width={100}
+        height={32}
+        priority
+      />
+    </div>
+
+    {/* Desktop links only */}
+    <div className="hidden sm:flex gap-3">
       <Link
         href="/"
-        className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-bold text-sm sm:text-lg"
+        className="px-4 py-2 bg-pink-600 rounded font-normal whitespace-nowrap"
       >
         HOME
       </Link>
       <Link
         href="/dashboard/deposit"
-        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-bold text-sm sm:text-lg"
+        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 rounded font-normal whitespace-nowrap"
       >
         DEPOSIT
       </Link>
       <Link
         href="/dashboard/withdraw"
-        className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-bold text-sm sm:text-lg"
+        className="px-4 py-2 bg-blue-500 rounded font-normal whitespace-nowrap"
       >
         WITHDRAW
       </Link>
     </div>
   </div>
 
-  {/* Right section: controls */}
-  <div className="flex flex-wrap items-center w-full sm:w-auto gap-2 mt-2 sm:mt-0">
-    {/* Left side of controls: toggle, KYC, Logout */}
-    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-      {/* Dark mode toggle */}
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          checked={darkMode}
-          onChange={() => setTheme(darkMode ? "light" : "dark")}
-          className="sr-only peer"
-        />
-        <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
-      </label>
+  {/* Right section: Dark mode + Google Translate + KYC + Logout */}
+  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-auto">
+    {/* Dark mode toggle */}
+    <label className="relative inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        checked={darkMode}
+        onChange={() => setTheme(darkMode ? "light" : "dark")}
+        className="sr-only peer"
+      />
+      <div className="w-9 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500"></div>
+    </label>
 
+    {/* Google Translate */}
+    <div className="flex-shrink-0">
+      <GoogleTranslate />
+    </div>
+
+    {/* Desktop-only buttons */}
+    <div className="hidden sm:flex items-center gap-2">
       {/* KYC */}
       <Link
         href="/kyc-verification"
-        className={`px-3 py-1 rounded font-semibold text-sm ${
-          darkMode ? "bg-gray-200 text-blue-600" : "bg-white text-blue-600"
-        }`}
+        className="px-3 py-1 bg-white text-blue-600 rounded font-normal text-sm whitespace-nowrap"
       >
         KYC
       </Link>
@@ -335,22 +348,65 @@ const DashboardPage: React.FC = () => {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className={`px-3 py-1 rounded font-semibold text-sm ${
-          darkMode
-            ? "bg-red-500 text-white hover:bg-red-600"
-            : "bg-red-600 text-white hover:bg-red-700"
-        }`}
+        className="px-3 py-1 bg-red-600 rounded font-normal text-sm whitespace-nowrap"
       >
         Logout
       </button>
     </div>
-
-    {/* Google Translate pushed right on all screens */}
-    <div className="ml-auto mt-2 sm:mt-0">
-      <GoogleTranslate />
-    </div>
   </div>
 </div>
+
+{/* Mobile Sliding Menu */}
+{sidebarOpen && (
+  <div className="sm:hidden fixed top-0 left-0 w-3/4 h-full bg-gray-800 text-white p-6 z-50 shadow-lg flex flex-col gap-4">
+    <Link href="/" className="px-4 py-2 rounded hover:bg-gray-700">
+      HOME
+    </Link>
+    <Link href="/dashboard/deposit" className="px-4 py-2 rounded hover:bg-gray-700">
+      DEPOSIT
+    </Link>
+    <Link href="/dashboard/withdraw" className="px-4 py-2 rounded hover:bg-gray-700">
+      WITHDRAW
+    </Link>
+    <Link href="/kyc-verification" className="px-4 py-2 rounded hover:bg-gray-700">
+      KYC
+    </Link>
+    {/* Mobile Logout (also inside sliding menu for convenience) */}
+    <button
+      onClick={handleLogout}
+      className="px-4 py-2 bg-red-600 rounded hover:bg-red-700"
+    >
+      Logout
+    </button>
+  </div>
+)}
+
+
+
+
+{/* ✅ Mobile Sliding Menu */}
+{sidebarOpen && (
+  <div className="sm:hidden fixed top-0 left-0 w-3/4 h-full bg-gray-800 text-white p-6 z-50 shadow-lg flex flex-col gap-4">
+    <Link href="/" className="px-4 py-2 rounded hover:bg-gray-700">
+      HOME
+    </Link>
+    <Link href="/dashboard/deposit" className="px-4 py-2 rounded hover:bg-gray-700">
+      DEPOSIT
+    </Link>
+    <Link href="/dashboard/withdraw" className="px-4 py-2 rounded hover:bg-gray-700">
+      WITHDRAW
+    </Link>
+    <Link href="/kyc-verification" className="px-4 py-2 rounded hover:bg-gray-700">
+      KYC
+    </Link>
+    <button
+      onClick={handleLogout}
+      className="px-4 py-2 bg-red-600 rounded hover:bg-red-700"
+    >
+      Logout
+    </button>
+  </div>
+)}
 
 
 
@@ -361,60 +417,73 @@ const DashboardPage: React.FC = () => {
 
         {/* Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 w-full max-w-full">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full">
-            {[
-              {
-                value:
-                  user?.balance !== undefined
-                    ? `$${user.balance.toFixed(2)}`
-                    : "$0.00",
-                label: "Account Balance",
-                extra: `Account Status: ${user?.status || "Active"}`,
-                color: "bg-purple-600",
-              },
-              {
-                value:
-                  user?.earnedProfit !== undefined
-                    ? `$${user.earnedProfit.toFixed(2)}`
-                    : "$0.00",
-                label: "Earned Profit",
-                extra: `Account Status: ${user?.status || "Active"}`,
-                color: "bg-green-600",
-              },
-              {
-                value:
-                  user?.activeDeposit !== undefined
-                    ? `$${user.activeDeposit.toFixed(2)}`
-                    : "$0.00",
-                label: "Active Deposit",
-                extra: `Account Status: ${user?.status || "Active"}`,
-                color: "bg-orange-500",
-              },
-              {
-                value: "Package Plan",
-                label: "Buy Package",
-                extra: (
-                  <Link
-                    href="/upgrades"
-                    className="mt-3 inline-block px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100"
-                  >
-                    Upgrade Account
-                  </Link>
-                ),
-                color: "bg-red-500",
-              },
-            ].map((card, i) => (
-              <div
-                key={i}
-                className={`${card.color} text-white shadow rounded-xl p-4 text-center w-full`}
-              >
-                <h3 className="text-sm">{card.label}</h3>
-                <p className="text-2xl font-bold">{card.value}</p>
-                <p className="text-xs mt-2">{card.extra}</p>
-              </div>
-            ))}
-          </div>
+
+
+     {/* Stats Cards */}
+<div className="grid grid-cols-2 gap-4 sm:gap-6 w-full">
+  {[
+    {
+      value:
+        user?.balance !== undefined
+          ? `$${user.balance.toFixed(2)}`
+          : "$0.00",
+      label: "Account Balance",
+      extra: `Account Status: ${user?.status || "Active"}`,
+      color: "bg-purple-600",
+    },
+    {
+      value:
+        user?.earnedProfit !== undefined
+          ? `$${user.earnedProfit.toFixed(2)}`
+          : "$0.00",
+      label: "Earned Profit",
+      extra: `Account Status: ${user?.status || "Active"}`,
+      color: "bg-green-600",
+    },
+    {
+      value:
+        user?.activeDeposit !== undefined
+          ? `$${user.activeDeposit.toFixed(2)}`
+          : "$0.00",
+      label: "Active Deposit",
+      extra: `Account Status: ${user?.status || "Active"}`,
+      color: "bg-orange-500",
+    },
+    {
+      value: "Package Plan",
+      label: "Buy Package",
+      extra: (
+        <Link
+          href="/upgrades"
+          className="mt-3 inline-block px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100"
+        >
+          Upgrade Account
+        </Link>
+      ),
+      color: "bg-red-500",
+    },
+  ].map((card, i) => (
+    <div
+      key={i}
+      className={`${card.color} text-white shadow rounded-xl p-4 text-center w-full
+        sm:p-4 sm:text-base
+        md:p-6 md:text-lg
+        transition-all duration-200
+      `}
+      // responsive height & width for mobile
+      style={{
+        minHeight: 100, // small height for mobile
+        maxHeight: 150, // cap max height
+      }}
+    >
+      <h3 className="text-sm sm:text-base">{card.label}</h3>
+      <p className="text-xl sm:text-2xl font-bold">{card.value}</p>
+      <p className="text-xs sm:text-sm mt-2">{card.extra}</p>
+    </div>
+  ))}
+</div>
+
+
 
           {/* Live Chart */}
           <div

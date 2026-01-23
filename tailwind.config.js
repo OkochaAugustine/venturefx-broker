@@ -10,8 +10,8 @@ module.exports = {
 
   theme: {
     screens: {
-      sm: "640px",  
-      md: "960px",  // breakpoint for desktop
+      sm: "640px",
+      md: "960px",
       lg: "1200px",
       xl: "1600px",
     },
@@ -29,11 +29,9 @@ module.exports = {
 
     extend: {
       fontSize: {
-        // MOBILE-FIRST: bold, larger text
-        base: ["1.25rem", { lineHeight: "1.75rem" }], // 20px for mobile
-        sm: ["1.25rem", { lineHeight: "1.75rem" }],   // same as base
-        // reset for desktop (md and up)
-        md: ["1rem", { lineHeight: "1.5rem" }],       // 16px normal
+        base: ["1rem", { lineHeight: "1.5rem" }], // normal text size everywhere
+        sm: ["1rem", { lineHeight: "1.5rem" }],
+        md: ["1rem", { lineHeight: "1.5rem" }],
         lg: ["1rem", { lineHeight: "1.5rem" }],
         xl: ["1rem", { lineHeight: "1.5rem" }],
       },
@@ -43,21 +41,11 @@ module.exports = {
           css: {
             maxWidth: "100%",
             color: "var(--foreground)",
-            p: {
-              marginTop: "0.75em",
-              marginBottom: "0.75em",
-              fontWeight: "700", // bold for mobile
-            },
-            h1: { marginBottom: "0.6em", fontWeight: "700" },
-            h2: { marginBottom: "0.6em", fontWeight: "700" },
-            h3: { marginBottom: "0.6em", fontWeight: "700" },
-            // desktop overrides
-            "@screen md": {
-              p: { fontWeight: "400" }, // normal for desktop
-              h1: { fontWeight: "600" },
-              h2: { fontWeight: "600" },
-              h3: { fontWeight: "600" },
-            },
+            p: { marginTop: "0.75em", marginBottom: "0.75em", fontWeight: "400" },
+            h1: { marginBottom: "0.6em", fontWeight: "400" },
+            h2: { marginBottom: "0.6em", fontWeight: "400" },
+            h3: { marginBottom: "0.6em", fontWeight: "400" },
+            // remove any responsive overrides entirely
           },
         },
       },

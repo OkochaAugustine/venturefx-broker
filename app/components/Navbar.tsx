@@ -67,15 +67,10 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a] text-white shadow-md">
-      {/* Translator Bar */}
-      <div className="w-full flex justify-start px-6 py-2 bg-[#0d1b2a] border-b border-gray-700 text-lg font-bold">
-        <GoogleTranslate />
-      </div>
-
+    <header className="w-full bg-[#0d1b2a] text-white shadow-md">
       {/* Main Navbar Row */}
       <div className="flex items-center justify-between px-6 py-5">
-        {/* Logo */}
+        {/* Logo + Text / Translator */}
         <Link
           href="/"
           className="flex items-center gap-3 hover:scale-110 transition-transform duration-500 ease-out"
@@ -87,12 +82,20 @@ export default function Navbar() {
               className="w-full h-full object-contain"
             />
           </div>
+
+          {/* VentureWise text: visible on desktop only */}
           <span
-            className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-gradient"
+            className="hidden md:block text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500 bg-clip-text text-transparent animate-gradient"
             style={{ fontFamily: "'Pacifico', cursive" }}
           >
             VentureWise
           </span>
+
+          {/* Google Translate: desktop next to text, mobile in same place as text */}
+          <div className="md:ml-4 md:block">
+            <GoogleTranslate />
+          </div>
+
           <style jsx>{`
             @keyframes gradient {
               0% {
@@ -191,11 +194,6 @@ export default function Navbar() {
           <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
           <Link href="/faq" className="hover:text-yellow-400 transition">FAQ</Link>
           <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
-
-          {/* Translate */}
-          <div className="my-4 flex justify-center">
-            <GoogleTranslate />
-          </div>
 
           {user ? (
             <>
@@ -298,4 +296,3 @@ export default function Navbar() {
     </header>
   );
 }
-

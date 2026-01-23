@@ -54,10 +54,8 @@ export default function RootLayout({
       >
         <Providers>
           <ScaleWrapper>
-            <main className="min-h-screen w-full flex flex-col gap-6 
-              text-lg font-bold      /* Mobile: larger & bold */
-              md:text-base md:font-normal /* Desktop: normal size & weight */
-            ">
+            {/* ✅ Normal text size and weight for all screens */}
+            <main className="min-h-screen w-full flex flex-col gap-6 text-base font-normal">
               {children}
             </main>
 

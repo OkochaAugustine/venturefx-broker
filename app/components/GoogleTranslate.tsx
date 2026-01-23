@@ -36,15 +36,11 @@ export default function GoogleTranslate() {
         strategy="afterInteractive"
       />
 
-      {/* Widget container — force inside navbar (top-right) */}
+      {/* Widget container */}
       <div
         id="google_translate_element"
-        style={{
-          position: "absolute",
-          top: "2rem",
-          right: "15rem",
-          zIndex: 50,
-        }}
+        className="relative sm:static sm:ml-2 ml-auto"
+        style={{ zIndex: 50 }}
       />
 
       {/* Styling */}
@@ -68,5 +64,6 @@ export default function GoogleTranslate() {
     </>
   );
 }
+
 
 
