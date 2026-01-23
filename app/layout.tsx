@@ -29,7 +29,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full text-base md:text-lg lg:text-xl"
+      className="h-full"
     >
       <head>
         <meta
@@ -40,23 +40,24 @@ export default function RootLayout({
 
       <body
         className={`
-          ${geistSans.variable}
-          ${geistMono.variable}
-          antialiased
-          min-h-screen
-          w-full
-          bg-white
-          overflow-x-hidden
-          overflow-y-auto
-          break-words
+          ${geistSans.variable} 
+          ${geistMono.variable} 
+          antialiased 
+          min-h-screen 
+          w-full 
+          bg-white 
+          overflow-x-hidden 
+          overflow-y-auto 
+          break-words 
           font-sans
         `}
       >
         <Providers>
           <ScaleWrapper>
-            
-
-            <main className="min-h-screen w-full flex flex-col gap-6 font-bold">
+            <main className="min-h-screen w-full flex flex-col gap-6 
+              text-lg font-bold      /* Mobile: larger & bold */
+              md:text-base md:font-normal /* Desktop: normal size & weight */
+            ">
               {children}
             </main>
 
@@ -67,6 +68,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-

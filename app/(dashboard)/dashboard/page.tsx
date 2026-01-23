@@ -256,85 +256,105 @@ const DashboardPage: React.FC = () => {
       {/* Main content */}
       <div className="flex flex-col flex-1 w-full">
         {/* Top Navbar */}
-        <div
-          className={`flex items-center justify-between px-4 py-2 shadow ${
-            darkMode ? "bg-gray-800 text-white" : "bg-blue-600 text-white"
-          }`}
-        >
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden"
-            >
-              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+        
 
-            <Image
-              src="/images/logo3.png"
-              alt="Company Logo"
-              width={120}
-              height={40}
-              priority
-            />
+  {/* Top Navbar */}
+{/* Top Navbar */}
+<div
+  className={`flex flex-col sm:flex-row sm:items-center justify-between px-4 py-2 shadow ${
+    darkMode ? "bg-gray-800 text-white" : "bg-blue-600 text-white"
+  } gap-2 sm:gap-0`}
+>
+  {/* Left section: logo + main links */}
+  <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
+    {/* Hamburger menu for mobile */}
+    <button
+      onClick={() => setSidebarOpen(!sidebarOpen)}
+      className="lg:hidden"
+    >
+      {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+    </button>
 
-            <div className="flex space-x-3 ml-6">
-              <Link
-                href="/"
-                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-bold text-lg"
-              >
-                HOME
-              </Link>
-              <Link
-                href="/dashboard/deposit"
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-bold text-lg"
-              >
-                DEPOSIT
-              </Link>
-              <Link
-                href="/dashboard/withdraw"
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-bold text-lg"
-              >
-                WITHDRAW
-              </Link>
-            </div>
-          </div>
+    {/* Logo */}
+    <Image
+      src="/images/logo3.png"
+      alt="Company Logo"
+      width={120}
+      height={40}
+      priority
+    />
 
-          <div className="flex items-center space-x-3">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={darkMode}
-                onChange={() => setTheme(darkMode ? "light" : "dark")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
-            </label>
+    {/* Main links */}
+    <div className="flex flex-wrap gap-2 sm:gap-3 mt-2 sm:mt-0">
+      <Link
+        href="/"
+        className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded text-white font-bold text-sm sm:text-lg"
+      >
+        HOME
+      </Link>
+      <Link
+        href="/dashboard/deposit"
+        className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-bold text-sm sm:text-lg"
+      >
+        DEPOSIT
+      </Link>
+      <Link
+        href="/dashboard/withdraw"
+        className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded text-white font-bold text-sm sm:text-lg"
+      >
+        WITHDRAW
+      </Link>
+    </div>
+  </div>
 
-            <GoogleTranslate />
+  {/* Right section: controls */}
+  <div className="flex flex-wrap items-center w-full sm:w-auto gap-2 mt-2 sm:mt-0">
+    {/* Left side of controls: toggle, KYC, Logout */}
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+      {/* Dark mode toggle */}
+      <label className="relative inline-flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={darkMode}
+          onChange={() => setTheme(darkMode ? "light" : "dark")}
+          className="sr-only peer"
+        />
+        <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
+      </label>
 
-            <Link
-              href="/kyc-verification"
-              className={`px-3 py-1 rounded font-semibold text-sm ${
-                darkMode
-                  ? "bg-gray-200 text-blue-600"
-                  : "bg-white text-blue-600"
-              }`}
-            >
-              KYC
-            </Link>
+      {/* KYC */}
+      <Link
+        href="/kyc-verification"
+        className={`px-3 py-1 rounded font-semibold text-sm ${
+          darkMode ? "bg-gray-200 text-blue-600" : "bg-white text-blue-600"
+        }`}
+      >
+        KYC
+      </Link>
 
-            <button
-              onClick={handleLogout}
-              className={`px-3 py-1 rounded font-semibold text-sm ${
-                darkMode
-                  ? "bg-red-500 text-white hover:bg-red-600"
-                  : "bg-red-600 text-white hover:bg-red-700"
-              }`}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
+      {/* Logout */}
+      <button
+        onClick={handleLogout}
+        className={`px-3 py-1 rounded font-semibold text-sm ${
+          darkMode
+            ? "bg-red-500 text-white hover:bg-red-600"
+            : "bg-red-600 text-white hover:bg-red-700"
+        }`}
+      >
+        Logout
+      </button>
+    </div>
+
+    {/* Google Translate pushed right on all screens */}
+    <div className="ml-auto mt-2 sm:mt-0">
+      <GoogleTranslate />
+    </div>
+  </div>
+</div>
+
+
+
+
 
         {/* TradingView Ticker */}
         <div ref={tickerRef} className="w-full" style={{ height: "60px" }} />
