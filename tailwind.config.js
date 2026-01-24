@@ -9,50 +9,31 @@ module.exports = {
   ],
 
   theme: {
+    // ✅ NORMAL industry-standard breakpoints
     screens: {
       sm: "640px",
-      md: "960px",
-      lg: "1200px",
-      xl: "1600px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
     },
 
     container: {
       center: true,
       padding: {
-        DEFAULT: "1rem",
-        sm: "1.5rem",
-        md: "2rem",
-        lg: "3rem",
-        xl: "4rem",
+        DEFAULT: "0.75rem", // smaller on mobile
+        sm: "1rem",
+        md: "1.5rem",
+        lg: "2rem",
+        xl: "2.5rem",
       },
     },
 
     extend: {
-      fontSize: {
-        base: ["1rem", { lineHeight: "1.5rem" }], // normal text size everywhere
-        sm: ["1rem", { lineHeight: "1.5rem" }],
-        md: ["1rem", { lineHeight: "1.5rem" }],
-        lg: ["1rem", { lineHeight: "1.5rem" }],
-        xl: ["1rem", { lineHeight: "1.5rem" }],
-      },
-
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: "100%",
-            color: "var(--foreground)",
-            p: { marginTop: "0.75em", marginBottom: "0.75em", fontWeight: "400" },
-            h1: { marginBottom: "0.6em", fontWeight: "400" },
-            h2: { marginBottom: "0.6em", fontWeight: "400" },
-            h3: { marginBottom: "0.6em", fontWeight: "400" },
-            // remove any responsive overrides entirely
-          },
-        },
-      },
+      // ✅ NO fontSize overrides (let Tailwind breathe)
+      // ✅ NO typography overrides
     },
   },
 
-  plugins: [
-    require("@tailwindcss/typography"),
-  ],
+  // ❌ REMOVE typography plugin completely
+  plugins: [],
 };

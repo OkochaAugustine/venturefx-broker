@@ -7,30 +7,40 @@
 :root {
   --spacing: 1rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.18 0 0); /* slightly softer text */
   --radius: 0.625rem;
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.18 0 0);
 
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.25 0 0);
+  --primary-foreground: oklch(0.98 0 0);
 
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.25 0 0);
 
-  --border: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.9 0 0);
+  --ring: oklch(0.7 0 0);
 }
 
 /* ---------- Dark Mode Theme ---------- */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  --background: oklch(0.15 0 0);
+  --foreground: oklch(0.95 0 0);
 }
 
 /* ---------- Base Layer ---------- */
 @layer base {
+  html {
+    font-size: 14px; /* ✅ subtle global zoom-out */
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -38,28 +48,39 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    font-weight: 400; /* ✅ normal weight everywhere */
+    line-height: 1.55;
   }
 
-  /* Remove bold from all text */
-  * {
-    font-weight: normal;
-    border-color: var(--border);
-    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  /* ❌ DO NOT force everything to normal — just tame bolds */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500; /* calm headings */
+  }
+
+  strong, b {
+    font-weight: 500;
   }
 
   svg {
-    font-weight: normal;
+    font-weight: 400;
+  }
+
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
   }
 }
 
 /* ---------- Components ---------- */
-.card {
-  @apply w-full rounded-2xl shadow-md;
-}
-
-@media (min-width: 768px) {
+@layer components {
   .card {
-    @apply max-w-md;
+    @apply w-full rounded-xl shadow-sm bg-white;
+  }
+
+  @media (min-width: 768px) {
+    .card {
+      @apply max-w-md;
+    }
   }
 }
 
@@ -75,31 +96,31 @@
   will-change: transform;
 }
 
-/* ---------- Container for responsive content ---------- */
+/* ---------- App Container ---------- */
 .container-app {
   width: 100%;
-  max-width: 1200px; /* desktop max width */
+  max-width: 1200px;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: 0.75rem; /* smaller on mobile */
 }
 
 @media (min-width: 768px) {
   .container-app {
-    padding-inline: 2rem;
+    padding-inline: 1.5rem;
   }
 }
 
 /* ---------- Card adjustments for mobile ---------- */
 @media (max-width: 1023px) {
   .card {
-    max-width: 90%;
+    max-width: 92%;
     margin: 0 auto;
   }
 }
 
 @media (max-width: 767px) {
   .card {
-    max-width: 95%;
+    max-width: 96%;
     margin: 0 auto;
   }
 }
@@ -111,11 +132,10 @@
   }
 }
 
-/* ---------- Remove zoom wrapper completely ---------- */
+/* ---------- Zoom wrapper (neutralized safely) ---------- */
 .zoom-wrapper {
   width: 100%;
   transform: none !important;
   overflow-x: hidden;
-  display: flex;
-  justify-content: center;
+  display: block;
 }

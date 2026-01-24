@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ScaleWrapper from "./scale-wrapper";
 import { Providers } from "./providers/ThemeProvider";
 import ChatBot from "@/components/ChatBot";
-import { FiHome, FiTrendingUp, FiUser } from "react-icons/fi"; // example icons
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -26,11 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className="h-full"
-    >
+    <html lang="en" suppressHydrationWarning className="h-full">
       <head>
         <meta
           name="viewport"
@@ -40,27 +35,27 @@ export default function RootLayout({
 
       <body
         className={`
-          ${geistSans.variable} 
-          ${geistMono.variable} 
-          antialiased 
-          min-h-screen 
-          w-full 
-          bg-white 
-          overflow-x-hidden 
-          overflow-y-auto 
-          break-words 
+          ${geistSans.variable}
+          ${geistMono.variable}
+          antialiased
+          min-h-screen
+          w-full
+          bg-white
+          overflow-x-hidden
+          overflow-y-auto
           font-sans
+          text-base
+          font-normal
         `}
       >
         <Providers>
-          <ScaleWrapper>
-            {/* ✅ Normal text size and weight for all screens */}
-            <main className="min-h-screen w-full flex flex-col gap-6 text-base font-normal">
-              {children}
-            </main>
+          {/* Main app content */}
+          <main className="min-h-screen w-full flex flex-col gap-6">
+            {children}
+          </main>
 
-            <ChatBot />
-          </ScaleWrapper>
+          {/* Floating chatbot */}
+          <ChatBot />
         </Providers>
       </body>
     </html>
