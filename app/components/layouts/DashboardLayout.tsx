@@ -30,16 +30,16 @@ export default function DashboardLayout({
     >
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-56 sm:w-64 transform transition-transform duration-300 ease-in-out
-        bg-white/40 backdrop-blur-2xl border-r border-white/20 shadow-2xl
+        className={`fixed inset-y-0 left-0 z-40 w-56 transform transition-transform duration-300 ease-in-out
+        bg-white/40 backdrop-blur-2xl border-r border-white/20 shadow-lg
         lg:relative lg:translate-x-0 
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="p-4 sm:p-6 text-2xl sm:text-3xl font-medium text-gray-900 drop-shadow-md border-b border-white/20 text-center">
+        <div className="p-4 text-2xl font-medium text-gray-900 drop-shadow-md border-b border-white/20 text-center">
           {traderName}
         </div>
 
-        <nav className="flex flex-col gap-2 sm:gap-3 p-3 sm:p-4">
+        <nav className="flex flex-col gap-2 p-3 text-sm sm:text-base font-normal">
           {[
             ["Dashboard", "/dashboard"],
             ["Trades", "/trades"],
@@ -49,13 +49,13 @@ export default function DashboardLayout({
             ["News", "/news"],
             ["Help/Support", "/help-support"],
             ["KYC Verification", "/kyc-verification"],
-          ].map(([label, href]) => (
+          ].map(([name, href]) => (
             <Link
-              key={href}
+              key={name}
               href={href}
-              className="px-3 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-base sm:text-lg font-medium text-gray-900 hover:text-red-600 shadow-sm hover:shadow-md transition-all duration-200 ease-out"
+              className="px-3 py-2 rounded-lg bg-white/70 hover:bg-white/90 text-gray-900 hover:text-red-600 shadow-sm hover:shadow-md transition-all duration-200 ease-out text-sm sm:text-base font-normal"
             >
-              {label}
+              {name}
             </Link>
           ))}
         </nav>
@@ -64,20 +64,20 @@ export default function DashboardLayout({
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 lg:hidden"
+          className="fixed inset-0 bg-black opacity-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Main content */}
-      <div className="flex flex-col flex-1 w-full text-sm sm:text-base font-normal">
+      <div className="flex flex-col flex-1 w-full">
         {/* Top Navbar */}
         <div
-          className={`flex items-center justify-between px-3 sm:px-4 py-1 sm:py-2 shadow ${
+          className={`flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2 shadow text-sm sm:text-base ${
             darkMode ? "bg-gray-800 text-white" : "bg-blue-600 text-white"
           }`}
         >
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             {/* Sidebar toggle (mobile) */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -96,22 +96,22 @@ export default function DashboardLayout({
             />
 
             {/* Quick links */}
-            <div className="hidden sm:flex space-x-2 sm:space-x-3 ml-4 sm:ml-6">
+            <div className="hidden sm:flex space-x-2 md:space-x-3 text-sm sm:text-base font-normal">
               <Link
                 href="/"
-                className="px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-white font-medium text-sm sm:text-base"
+                className="px-3 py-1 bg-pink-600 hover:bg-pink-700 rounded text-white"
               >
                 HOME
               </Link>
               <Link
                 href="/deposit"
-                className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white font-medium text-sm sm:text-base"
+                className="px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 hover:opacity-90 rounded text-white"
               >
                 DEPOSIT
               </Link>
               <Link
                 href="/withdraw"
-                className="px-3 py-1 bg-blue-500 hover:bg-blue-700 rounded text-white font-medium text-sm sm:text-base"
+                className="px-3 py-1 bg-blue-500 hover:bg-blue-700 rounded text-white"
               >
                 WITHDRAW
               </Link>
@@ -119,7 +119,7 @@ export default function DashboardLayout({
           </div>
 
           {/* Right section */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 text-sm sm:text-base font-normal">
             {/* Theme switch */}
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -128,7 +128,7 @@ export default function DashboardLayout({
                 onChange={() => setTheme(darkMode ? "light" : "dark")}
                 className="sr-only peer"
               />
-              <div className="w-9 sm:w-11 h-5 sm:h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500"></div>
+              <div className="w-9 h-5 bg-gray-300 rounded-full peer-checked:bg-green-500"></div>
             </label>
 
             {/* Translate */}
@@ -137,7 +137,7 @@ export default function DashboardLayout({
             {/* KYC button */}
             <Link
               href="/kyc-verification"
-              className={`px-2 sm:px-3 py-1 rounded font-medium text-xs sm:text-sm ${
+              className={`px-2 py-1 rounded text-sm font-normal ${
                 darkMode
                   ? "bg-gray-200 text-blue-600"
                   : "bg-white text-blue-600"
@@ -149,7 +149,7 @@ export default function DashboardLayout({
             {/* Logout */}
             <button
               onClick={onLogout}
-              className={`px-2 sm:px-3 py-1 rounded font-medium text-xs sm:text-sm ${
+              className={`px-2 py-1 rounded text-sm font-normal ${
                 darkMode
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "bg-red-600 text-white hover:bg-red-700"
@@ -161,13 +161,13 @@ export default function DashboardLayout({
         </div>
 
         {/* Page content */}
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 w-full max-w-full text-sm sm:text-base font-normal">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-6 sm:space-y-8 text-sm sm:text-base font-normal w-full max-w-full">
           {children}
         </main>
 
         {/* Footer */}
         <footer
-          className={`border-t py-3 sm:py-4 text-center text-xs sm:text-sm w-full ${
+          className={`border-t py-3 text-center text-xs sm:text-sm w-full ${
             darkMode ? "bg-gray-800 text-gray-300" : "bg-gray-50 text-gray-600"
           }`}
         >
@@ -177,4 +177,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-
