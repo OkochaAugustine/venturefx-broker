@@ -20,7 +20,7 @@ export default function Hero() {
   }, [images.length]);
 
   return (
-    <section className="relative h-[90vh] w-full flex items-end justify-center text-white overflow-hidden">
+    <section className="relative h-[90vh] w-full flex items-start justify-center text-white overflow-hidden">
       {/* ✅ Background Slider */}
       {images.map((img, index) => (
         <div
@@ -42,7 +42,7 @@ export default function Hero() {
       ))}
 
       {/* ✅ Text Section */}
-      <div className="relative z-10 max-w-3xl px-6 md:px-12 pb-16 md:pb-24 text-center md:text-left">
+      <div className="relative z-10 max-w-3xl px-6 md:px-12 pt-16 md:pt-24 text-center md:text-left">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-snug">
           Register Now and Get <br />
           <span className="text-red-500">$500 Bonus</span> on <br />
@@ -87,5 +87,3 @@ export default function Hero() {
     </section>
   );
 }
-
-
