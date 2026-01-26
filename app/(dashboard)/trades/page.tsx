@@ -1,11 +1,9 @@
-// app/(dashboard)/trades/page.tsx
 "use client";
 
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useState } from "react";
 import TradesNav from "@/components/TradeNav";
 
-// ✅ Correct Recharts imports
 import {
   LineChart,
   Line,
@@ -19,7 +17,6 @@ import {
   Legend,
 } from "recharts";
 
-// ✅ Mock data for charts
 const data = [
   { name: "Mon", value: 120, volume: 300 },
   { name: "Tue", value: 200, volume: 250 },
@@ -34,24 +31,32 @@ export default function TradesPage() {
   const [amount, setAmount] = useState("10");
   const [stopLoss, setStopLoss] = useState("");
   const [takeProfit, setTakeProfit] = useState("");
-  const [showPopup, setShowPopup] = useState(true);
+
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showStarted, setShowStarted] = useState(false);
+  const [tradeType, setTradeType] = useState<"BUY / LONG" | "SELL / SHORT" | null>(null);
+
+  const handleTradeClick = (type: "BUY / LONG" | "SELL / SHORT") => {
+    setTradeType(type);
+    setShowConfirm(true);
+  };
 
   return (
     <DashboardLayout>
-      {/* Popup Overlay */}
-      {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md text-center">
+      {/* ✅ Welcome Popup */}
+      {showWelcome && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md text-center">
             <h2 className="text-lg font-bold mb-4">
               Welcome To Our Live Trade Section
             </h2>
             <p className="text-sm text-gray-700 mb-6">
-              To Simplify The Process Kindly Subscribe To Our BOT Service to
-              Eliminate The RISK Of Loss When Trading Your Self.
+              Kindly subscribe to our BOT service to eliminate the risk of loss.
             </p>
             <button
-              onClick={() => setShowPopup(false)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+              onClick={() => setShowWelcome(false)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
             >
               Okay
             </button>
@@ -59,31 +64,76 @@ export default function TradesPage() {
         </div>
       )}
 
-      {/* Main Page Content */}
+      {/* ✅ Confirm Trade Popup */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <h2 className="text-lg font-bold mb-4 text-center">
+              Confirm BOT Trade
+            </h2>
+
+            <div className="space-y-2 text-sm">
+              <p><b>Asset:</b> {asset}</p>
+              <p><b>Trade Type:</b> {tradeType}</p>
+              <p><b>Duration:</b> {duration || "Not selected"}</p>
+              <p><b>Amount:</b> ${amount}</p>
+              <p><b>Stop Loss:</b> {stopLoss || "None"}</p>
+              <p><b>Take Profit:</b> {takeProfit || "None"}</p>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowConfirm(false);
+                setShowStarted(true);
+              }}
+              className="mt-6 bg-green-600 text-white w-full py-2 rounded-lg"
+            >
+              OKAY, CONFIRM BOT TRADE
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ Bot Started Popup */}
+      {showStarted && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md text-center">
+            <h2 className="text-xl font-bold mb-4 text-green-600">
+              Bot Trading Started 🚀
+            </h2>
+            <p className="text-sm text-gray-700 mb-6">
+              Good luck! Stay tuned while our BOT executes your trade.
+            </p>
+            <button
+              onClick={() => setShowStarted(false)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MAIN PAGE ================= */}
       <div className="p-6 space-y-6">
-        {/* 🔥 Top Nav with live pairs */}
         <TradesNav asset={asset} setAsset={setAsset} />
 
         <h1 className="text-2xl font-bold">Live Trade Dashboard</h1>
 
-        {/* Banner */}
         <div className="bg-green-600 text-white p-2 rounded">
           Buy Exclusive Trading BOT $500 For 2 Years, Estimated BOT Earnings
-          0.3%/0.6% Daily
+          0.3% / 0.6% Daily
         </div>
 
-        {/* TradingView Main Chart */}
         <div className="w-full h-[400px] border rounded overflow-hidden">
           <iframe
-            src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_12345&symbol=${asset}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&hideideas=1`}
-            style={{ width: "100%", height: "100%" }}
+            src={`https://s.tradingview.com/widgetembed/?symbol=${asset}&interval=D&hidesidetoolbar=1`}
+            className="w-full h-full"
           />
         </div>
 
-        {/* Extra Charts to fill page */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Line Chart */}
-          <div className="h-64 w-full border rounded p-2 bg-white">
+          <div className="h-64 bg-white border rounded p-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -95,8 +145,7 @@ export default function TradesPage() {
             </ResponsiveContainer>
           </div>
 
-          {/* Bar Chart */}
-          <div className="h-64 w-full border rounded p-2 bg-white">
+          <div className="h-64 bg-white border rounded p-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -112,55 +161,52 @@ export default function TradesPage() {
 
         {/* Trading Form */}
         <div className="space-y-4">
-          <div>
-            <label className="block">Duration of Trade</label>
-            <select
-              className="border rounded w-full p-2"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            >
-              <option value="">Select Duration</option>
-              <option value="1m">1 Minute</option>
-              <option value="5m">5 Minutes</option>
-              <option value="1h">1 Hour</option>
-              <option value="1d">1 Day</option>
-            </select>
-          </div>
+          <select
+            className="border rounded w-full p-2"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          >
+            <option value="">Select Duration</option>
+            <option value="1m">1 Minute</option>
+            <option value="5m">5 Minutes</option>
+            <option value="1h">1 Hour</option>
+            <option value="1d">1 Day</option>
+          </select>
 
-          <div>
-            <label className="block">Input Amount to Trade</label>
-            <input
-              type="text"
-              className="border rounded w-full p-2"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-          </div>
+          <input
+            className="border rounded w-full p-2"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Input Amount to Trade"
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <input
-              type="text"
-              placeholder="Enter Stop Loss"
-              className="border rounded w-full p-2"
+              className="border rounded p-2"
+              placeholder="Stop Loss"
               value={stopLoss}
               onChange={(e) => setStopLoss(e.target.value)}
             />
             <input
-              type="text"
-              placeholder="Enter Take Profit"
-              className="border rounded w-full p-2"
+              className="border rounded p-2"
+              placeholder="Take Profit"
               value={takeProfit}
               onChange={(e) => setTakeProfit(e.target.value)}
             />
           </div>
         </div>
 
-        {/* Execute trade buttons */}
         <div className="flex gap-4">
-          <button className="bg-green-600 text-white w-full py-3 rounded">
+          <button
+            onClick={() => handleTradeClick("BUY / LONG")}
+            className="bg-green-600 text-white w-full py-3 rounded"
+          >
             BUY / LONG
           </button>
-          <button className="bg-red-600 text-white w-full py-3 rounded">
+          <button
+            onClick={() => handleTradeClick("SELL / SHORT")}
+            className="bg-red-600 text-white w-full py-3 rounded"
+          >
             SELL / SHORT
           </button>
         </div>
